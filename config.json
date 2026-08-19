@@ -1,0 +1,7 @@
+{
+  "target_urls": [
+    "https://example.com/"
+  ],
+  "check_interval_minutes": 10,
+  "notification_cooldown_minutes": 60
+}
