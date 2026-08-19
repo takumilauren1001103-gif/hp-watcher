@@ -1,0 +1,41 @@
+name: HP電話番号監視
+
+on:
+  schedule:
+    # 10分ごとに実行（UTC基準だが間隔なので時差は関係なし）
+    - cron: "*/10 * * * *"
+  # 手動実行もできるようにする
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Pythonを準備
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 監視スクリプトを実行
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor.py
+
+      - name: 通知履歴を保存
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add history.json
+          if git diff --staged --quiet; then
+            echo "履歴に変更なし"
+          else
+            git commit -m "通知履歴を更新"
+            git push
+          fi
