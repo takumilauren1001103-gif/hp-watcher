@@ -1,6 +1,7 @@
 {
   "target_urls": [
-    "https://example.com/"
+    "https://ここに監視したいURL1/",
+    "https://ここに監視したいURL2/"
   ],
   "check_interval_minutes": 10,
   "notification_cooldown_minutes": 60
