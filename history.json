@@ -1,16 +1,5 @@
 {
   "notified": {},
   "detected": {},
-  "failures": {
-    "https://ここに監視したいURL1/": {
-      "count": 1,
-      "alerted": false,
-      "last_error": "'latin-1' codec can't encode characters in position 0-7: ordinal not in range(256)"
-    },
-    "https://ここに監視したいURL2/": {
-      "count": 1,
-      "alerted": false,
-      "last_error": "'latin-1' codec can't encode characters in position 0-7: ordinal not in range(256)"
-    }
-  }
+  "failures": {}
 }
