@@ -1,16 +1,9 @@
 {
   "target_urls": [
     "https://ここに監視したいURL1/",
-    "https://ここに監視したいURL2/"
+    "https://ここに監視したいURL2/",
+    "https://dnd-inc.jp/"
   ],
-   "check_interval_minutes": 30,
-  "notification_cooldown_minutes": 60,
-  "detect_mobile": true,
-  "detect_landline": true,
-  "detect_tollfree": true,
-  "use_browser": true,
-  "use_ocr": true,
-  "ocr_max_images": 8,
-  "error_alert_after": 3,
-  "request_interval_seconds": 3
+  "check_interval_minutes": 30,
+  "notification_cooldown_minutes": 60
 }
