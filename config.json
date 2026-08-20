@@ -1,6 +1,5 @@
 {
   "target_urls": [
-    "https://ここに監視したいURL2/",
     "https://dnd-inc.jp/"
   ],
   "check_interval_minutes": 30,
