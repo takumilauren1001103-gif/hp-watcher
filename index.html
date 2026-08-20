@@ -1,427 +1,404 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HP監視システム</title>
 <style>
-  :root {
-    --bg: #f7f7f5;
-    --card: #fff;
-    --border: #e5e5e3;
-    --text: #1a1a1a;
-    --sub: #666;
-    --muted: #999;
-    --accent: #0D9373;
-    --danger: #c53030;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a1a;
-      --card: #242424;
-      --border: #333;
-      --text: #e5e5e3;
-      --sub: #aaa;
-      --muted: #777;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  .wrap { max-width: 600px; margin: 0 auto; padding: 20px 16px 40px; }
-  .header { padding: 24px 0 16px; display: flex; justify-content: space-between; align-items: flex-start; }
-  .header h1 { font-size: 20px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-  .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(13,147,115,0.2); display: inline-block; }
-  .header p { font-size: 13px; color: var(--sub); margin-top: 4px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; }
-  .card-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; color: var(--sub); }
-  .card-body { padding: 16px; }
-  .input-row { display: flex; gap: 8px; }
-  input[type="text"], input[type="password"], input[type="number"] {
-    padding: 10px 14px; font-size: 14px; border: 1px solid var(--border);
-    border-radius: 8px; background: var(--bg); color: var(--text); outline: none; width: 100%;
-  }
-  input:focus { border-color: var(--accent); }
-  .btn {
-    padding: 10px 18px; font-size: 14px; font-weight: 500; border: none;
-    border-radius: 8px; cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:disabled { opacity: 0.5; cursor: default; }
-  .btn-ghost { background: none; color: var(--danger); font-size: 12px; padding: 4px 10px; }
-  .btn-outline { background: none; color: var(--sub); font-size: 13px; padding: 6px 12px; border: 1px solid var(--border); }
-  .url-item {
-    padding: 12px 16px; display: flex; justify-content: space-between;
-    align-items: center; border-bottom: 1px solid var(--border); gap: 8px;
-  }
-  .url-item:last-child { border-bottom: none; }
-  .url-text { font-size: 14px; word-break: break-all; flex: 1; }
-  .empty { padding: 40px 16px; text-align: center; color: var(--muted); font-size: 14px; }
-  .error { font-size: 13px; color: var(--danger); margin-top: 6px; }
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 8px;
-    font-size: 14px; font-weight: 500; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    display: none;
-  }
-  .toast.show { display: block; }
-  .flow {
-    padding: 16px; border-radius: 12px; border: 1px solid var(--border);
-    background: var(--card); margin-bottom: 16px; font-size: 13px;
-    color: var(--sub); text-align: center; line-height: 2.2;
-  }
-  .flow b { font-weight: 500; }
-  .setup-card { padding: 20px; }
-  .field { margin-bottom: 16px; }
-  .field label { font-size: 13px; font-weight: 500; color: var(--sub); display: block; margin-bottom: 6px; }
-  .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.8; }
-  .field-row { display: flex; gap: 12px; }
-  .field-row .field { flex: 1; }
-  .log-item { padding: 8px 16px; font-size: 13px; color: var(--sub); border-bottom: 1px solid var(--border); }
-  .log-item:last-child { border-bottom: none; }
-  .log-time { font-size: 12px; color: var(--muted); margin-right: 8px; }
-  #setup-screen, #main-screen { display: none; }
+:root{
+  --bg:#faf9f7; --card:#ffffff; --line:#e3e1dc; --ink:#1c1b19;
+  --dim:#6b6862; --faint:#9a968e; --go:#0d7d5f; --stop:#b03a2e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+  line-height:1.7; padding:0 16px 60px;
+}
+.wrap{max-width:640px;margin:0 auto}
+
+/* ヘッダ */
+header{padding:36px 0 20px;border-bottom:2px solid var(--ink);margin-bottom:28px}
+h1{font-size:21px;font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+h1 .dot{width:9px;height:9px;border-radius:50%;background:var(--go);flex:none}
+header p{font-size:13px;color:var(--dim);margin-top:5px}
+
+/* カード */
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:14px}
+.box-t{padding:13px 16px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--dim);display:flex;justify-content:space-between;align-items:center}
+.box-b{padding:16px}
+
+/* フォーム */
+label{display:block;font-size:13px;font-weight:600;color:var(--dim);margin-bottom:5px}
+input{
+  width:100%;padding:11px 13px;font-size:15px;font-family:inherit;
+  border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);
+}
+input:focus{outline:2px solid var(--go);outline-offset:-1px;border-color:transparent}
+.fld{margin-bottom:18px}
+.fld:last-child{margin-bottom:0}
+.note{font-size:12px;color:var(--faint);margin-top:5px;line-height:1.7}
+.two{display:flex;gap:12px}
+.two>*{flex:1}
+
+/* ボタン */
+button{
+  font-family:inherit;font-size:14px;font-weight:600;
+  border:none;border-radius:7px;cursor:pointer;padding:11px 20px;
+  white-space:nowrap;
+}
+.go{background:var(--go);color:#fff}
+.go:disabled{opacity:.45;cursor:default}
+.full{width:100%}
+.mini{background:none;color:var(--stop);font-size:12px;padding:5px 9px;font-weight:500}
+.line-btn{background:none;color:var(--dim);border:1px solid var(--line);font-size:13px;padding:7px 13px}
+
+/* リスト */
+.row{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.row:last-child{border-bottom:none}
+.row span{font-size:14px;word-break:break-all;flex:1}
+.void{padding:36px 16px;text-align:center;color:var(--faint);font-size:14px}
+
+/* 通知 */
+.msg{font-size:13px;margin-top:8px;min-height:1px}
+.msg.bad{color:var(--stop)}
+.msg.good{color:var(--go)}
+#flash{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
+  background:var(--ink);color:#fff;padding:11px 22px;border-radius:7px;
+  font-size:14px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.2);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:99;
+}
+#flash.on{opacity:1}
+
+/* 流れ図 */
+.flow{
+  border:1px dashed var(--line);border-radius:10px;padding:16px;
+  font-size:13px;color:var(--dim);text-align:center;line-height:2.3;
+}
+.flow b{color:var(--ink)}
+
+/* 致命的エラー表示 */
+#crash{
+  display:none;background:#fdf0ee;border:1px solid var(--stop);color:var(--stop);
+  border-radius:8px;padding:14px 16px;font-size:13px;margin:20px 0;
+  font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-all;
+}
+.hide{display:none !important}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- ===== SETUP SCREEN ===== -->
-  <div id="setup-screen">
-    <div style="padding: 40px 0 20px">
-      <h1 style="font-size:20px; font-weight:500">初期設定</h1>
-      <p style="font-size:14px; color:var(--sub); margin-top:6px">
-        GitHubと接続して、この画面からURLを追加できるようにします。
-      </p>
+<div id="crash"></div>
+
+<!-- ===== 設定画面（初期表示。JSが死んでもここは見える） ===== -->
+<section id="setup">
+  <header>
+    <h1><span class="dot"></span>HP監視システム</h1>
+    <p>初期設定 — GitHubと接続します</p>
+  </header>
+
+  <div class="box"><div class="box-b">
+    <div class="fld">
+      <label>GitHubユーザー名</label>
+      <input type="text" id="in-owner" placeholder="takumilauren1001103-gif" autocomplete="off">
+      <div class="note">github.com/<b>ここ</b>/hp-watcher の部分</div>
     </div>
-    <div class="card">
-      <div class="setup-card">
-        <div class="field">
-          <label>GitHubユーザー名</label>
-          <input type="text" id="s-owner" placeholder="takumilauren1001103-gif">
-          <div class="hint">github.com/○○○/hp-watcher の ○○○</div>
-        </div>
-        <div class="field">
-          <label>リポジトリ名</label>
-          <input type="text" id="s-repo" value="hp-watcher">
-        </div>
-        <div class="field">
-          <label>Personal Access Token</label>
-          <input type="password" id="s-token" placeholder="github_pat_...">
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>巡回間隔（分）</label>
-            <input type="number" id="s-interval" value="10" min="5" max="60">
-          </div>
-          <div class="field">
-            <label>再通知抑止（分）</label>
-            <input type="number" id="s-cooldown" value="60" min="5" max="1440">
-          </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%; margin-top:8px" id="s-save">
-          接続してはじめる
-        </button>
-        <div id="s-error" class="error" style="text-align:center; margin-top:8px"></div>
+
+    <div class="fld">
+      <label>リポジトリ名</label>
+      <input type="text" id="in-repo" value="hp-watcher" autocomplete="off">
+    </div>
+
+    <div class="fld">
+      <label>Personal Access Token</label>
+      <input type="password" id="in-token" placeholder="github_pat_..." autocomplete="off">
+      <div class="note">GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens で発行。Contents を Read and write に。</div>
+    </div>
+
+    <div class="fld two">
+      <div>
+        <label>巡回間隔（分）</label>
+        <input type="number" id="in-interval" value="10" min="5" max="60">
+      </div>
+      <div>
+        <label>再通知抑止（分）</label>
+        <input type="number" id="in-cooldown" value="60" min="5" max="1440">
       </div>
     </div>
-  </div>
 
-  <!-- ===== MAIN SCREEN ===== -->
-  <div id="main-screen">
-    <div class="header">
+    <button class="go full" id="btn-connect" style="margin-top:18px">接続してはじめる</button>
+    <div class="msg" id="msg-setup"></div>
+  </div></div>
+</section>
+
+<!-- ===== メイン画面 ===== -->
+<section id="main" class="hide">
+  <header>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
       <div>
-        <h1><span class="pulse"></span> HP監視システム</h1>
+        <h1><span class="dot"></span>HP監視システム</h1>
         <p>電話番号が掲載されたら Telegram に通知</p>
       </div>
-      <button class="btn btn-outline" id="btn-setup">設定</button>
+      <button class="line-btn" id="btn-config">設定</button>
     </div>
+  </header>
 
-    <!-- URL入力 -->
-    <div class="card">
-      <div class="card-body">
-        <div style="font-size:13px; font-weight:500; color:var(--sub); margin-bottom:8px">
-          監視URLを追加
-        </div>
-        <div class="input-row">
-          <input type="text" id="url-input" placeholder="https://example.com/">
-          <button class="btn btn-primary" id="btn-add">追加</button>
-        </div>
-        <div id="url-error" class="error"></div>
-      </div>
+  <div class="box"><div class="box-b">
+    <label>監視URLを追加</label>
+    <div style="display:flex;gap:8px">
+      <input type="text" id="in-url" placeholder="https://example.com/" autocomplete="off">
+      <button class="go" id="btn-add">追加</button>
     </div>
+    <div class="msg" id="msg-url"></div>
+  </div></div>
 
-    <!-- URL一覧 -->
-    <div class="card">
-      <div class="card-header">
-        <span>監視中（<span id="url-count">0</span>件）</span>
-        <span style="font-size:12px; color:var(--muted)" id="interval-label"></span>
-      </div>
-      <div id="url-list"></div>
+  <div class="box">
+    <div class="box-t">
+      <span>監視中（<span id="n-urls">0</span>件）</span>
+      <span style="font-weight:400;color:var(--faint)" id="lbl-interval"></span>
     </div>
-
-    <!-- 操作ログ -->
-    <div class="card" id="log-card" style="display:none">
-      <div class="card-header"><span>操作ログ</span></div>
-      <div id="log-list"></div>
-    </div>
-
-    <!-- フロー -->
-    <div class="flow">
-      HP発見 → <b>ここでURL入力</b> → 自動巡回 → 電話番号検知 → Telegram通知
-    </div>
+    <div id="list-urls"></div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="box hide" id="box-log">
+    <div class="box-t"><span>操作ログ</span></div>
+    <div id="list-log"></div>
+  </div>
+
+  <div class="flow">
+    新規HP発見 → <b>この画面でURL入力</b> → 自動巡回 → 携帯番号を検知 → Telegram通知
+  </div>
+</section>
+
 </div>
+<div id="flash"></div>
 
 <script>
-(function() {
-  // ── State ──
-  let urls = [];
-  let logs = [];
-  let config = {
-    owner: '', repo: 'hp-watcher', token: '',
-    interval: 10, cooldown: 60,
-  };
+"use strict";
 
-  // ── Storage ──
-  function loadLocal() {
+// 何が起きても画面に出す
+window.onerror = function(m, s, l, c, e) {
+  var box = document.getElementById("crash");
+  box.style.display = "block";
+  box.textContent = "エラーが発生しました:\n" + m + "\n(" + l + ":" + c + ")";
+  return false;
+};
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  var cfg = { owner: "", repo: "hp-watcher", token: "", interval: 10, cooldown: 60 };
+  var urls = [];
+  var logs = [];
+
+  // ---------- 保存 ----------
+  function readStore() {
     try {
-      const s = localStorage.getItem('hp-watcher-config');
-      if (s) config = { ...config, ...JSON.parse(s) };
-      const l = localStorage.getItem('hp-watcher-log');
-      if (l) logs = JSON.parse(l);
-    } catch(e) {}
+      var a = localStorage.getItem("hpw.cfg");
+      if (a) { var o = JSON.parse(a); for (var k in o) cfg[k] = o[k]; }
+      var b = localStorage.getItem("hpw.log");
+      if (b) logs = JSON.parse(b) || [];
+    } catch (e) {}
   }
-  function saveLocal() {
-    localStorage.setItem('hp-watcher-config', JSON.stringify(config));
-    localStorage.setItem('hp-watcher-log', JSON.stringify(logs));
-  }
-
-  // ── Toast ──
-  function toast(msg) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2800);
-  }
-
-  // ── Log ──
-  function addLog(msg) {
-    const time = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-    logs = [{ time, msg }, ...logs].slice(0, 30);
-    saveLocal();
-    renderLog();
-  }
-
-  // ── GitHub API ──
-  async function fetchUrls() {
-    const url = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/config.json`;
+  function writeStore() {
     try {
-      const resp = await fetch(url, {
-        headers: { Authorization: `Bearer ${config.token}`, Accept: 'application/vnd.github.v3+json' }
-      });
-      if (!resp.ok) return null;
-      const data = await resp.json();
-      const content = JSON.parse(atob(data.content));
-      return { sha: data.sha, config: content };
-    } catch(e) { return null; }
+      localStorage.setItem("hpw.cfg", JSON.stringify(cfg));
+      localStorage.setItem("hpw.log", JSON.stringify(logs));
+    } catch (e) {}
   }
 
-  async function pushConfig(urlList) {
-    const configObj = {
-      target_urls: urlList,
-      check_interval_minutes: config.interval,
-      notification_cooldown_minutes: config.cooldown,
-    };
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(configObj, null, 2) + '\n')));
-    const apiUrl = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/config.json`;
-
-    // Get SHA
-    let sha = null;
-    try {
-      const getResp = await fetch(apiUrl, {
-        headers: { Authorization: `Bearer ${config.token}`, Accept: 'application/vnd.github.v3+json' }
-      });
-      if (getResp.ok) sha = (await getResp.json()).sha;
-    } catch(e) {}
-
-    const body = {
-      message: '監視URL更新 (' + new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }) + ')',
-      content: content,
-    };
-    if (sha) body.sha = sha;
-
-    const resp = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${config.token}`,
-        Accept: 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+  // ---------- 表示 ----------
+  function flash(t) {
+    var f = $("flash");
+    f.textContent = t; f.classList.add("on");
+    setTimeout(function () { f.classList.remove("on"); }, 2600);
+  }
+  function say(id, text, kind) {
+    var el = $(id);
+    el.textContent = text || "";
+    el.className = "msg" + (kind ? " " + kind : "");
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (m) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m];
     });
-    return resp.ok;
   }
 
-  // ── Render ──
-  function renderUrls() {
-    const list = document.getElementById('url-list');
-    document.getElementById('url-count').textContent = urls.length;
-    document.getElementById('interval-label').textContent = config.interval + '分ごとに巡回';
+  function toSetup() {
+    $("setup").classList.remove("hide");
+    $("main").classList.add("hide");
+    $("in-owner").value = cfg.owner;
+    $("in-repo").value = cfg.repo;
+    $("in-token").value = cfg.token;
+    $("in-interval").value = cfg.interval;
+    $("in-cooldown").value = cfg.cooldown;
+  }
+  function toMain() {
+    $("setup").classList.add("hide");
+    $("main").classList.remove("hide");
+    drawUrls(); drawLogs();
+  }
 
-    if (urls.length === 0) {
-      list.innerHTML = '<div class="empty">URLを追加してください</div>';
+  function drawUrls() {
+    $("n-urls").textContent = urls.length;
+    $("lbl-interval").textContent = cfg.interval + "分ごとに巡回";
+    var box = $("list-urls");
+    if (!urls.length) {
+      box.innerHTML = '<div class="void">URLを追加してください</div>';
       return;
     }
-    list.innerHTML = urls.map((url, i) =>
-      '<div class="url-item">' +
-        '<span class="url-text">' + escHtml(url) + '</span>' +
-        '<button class="btn btn-ghost" data-rm="' + i + '">削除</button>' +
-      '</div>'
-    ).join('');
+    var h = "";
+    for (var i = 0; i < urls.length; i++) {
+      h += '<div class="row"><span>' + esc(urls[i]) +
+           '</span><button class="mini" data-i="' + i + '">削除</button></div>';
+    }
+    box.innerHTML = h;
+    var bs = box.querySelectorAll("button[data-i]");
+    for (var j = 0; j < bs.length; j++) {
+      bs[j].onclick = function () { dropUrl(parseInt(this.getAttribute("data-i"), 10)); };
+    }
+  }
 
-    list.querySelectorAll('[data-rm]').forEach(btn => {
-      btn.addEventListener('click', () => removeUrl(parseInt(btn.dataset.rm)));
+  function drawLogs() {
+    if (!logs.length) { $("box-log").classList.add("hide"); return; }
+    $("box-log").classList.remove("hide");
+    var h = "";
+    for (var i = 0; i < Math.min(logs.length, 8); i++) {
+      h += '<div class="row"><span style="font-size:13px;color:var(--dim)">' +
+           '<span style="color:var(--faint);font-size:12px;margin-right:8px">' +
+           esc(logs[i].t) + "</span>" + esc(logs[i].m) + "</span></div>";
+    }
+    $("list-log").innerHTML = h;
+  }
+
+  function note(m) {
+    logs.unshift({ t: new Date().toLocaleString("ja-JP"), m: m });
+    logs = logs.slice(0, 30);
+    writeStore(); drawLogs();
+  }
+
+  // ---------- GitHub ----------
+  function api() {
+    return "https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/config.json";
+  }
+  function head() {
+    return { Authorization: "Bearer " + cfg.token, Accept: "application/vnd.github+json" };
+  }
+
+  function pull() {
+    return fetch(api(), { headers: head() }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw new Error(e.message || ("HTTP " + r.status)); });
+      return r.json();
+    }).then(function (d) {
+      var raw = decodeURIComponent(escape(atob(d.content.replace(/\s/g, ""))));
+      return { sha: d.sha, data: JSON.parse(raw) };
     });
   }
 
-  function renderLog() {
-    const card = document.getElementById('log-card');
-    const list = document.getElementById('log-list');
-    if (logs.length === 0) { card.style.display = 'none'; return; }
-    card.style.display = '';
-    list.innerHTML = logs.slice(0, 8).map(e =>
-      '<div class="log-item"><span class="log-time">' + escHtml(e.time) + '</span>' + escHtml(e.msg) + '</div>'
-    ).join('');
+  function push(list) {
+    var body = {
+      target_urls: list,
+      check_interval_minutes: cfg.interval,
+      notification_cooldown_minutes: cfg.cooldown
+    };
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(body, null, 2) + "\n")));
+    return fetch(api(), { headers: head() })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (cur) {
+        var payload = { message: "監視URL更新", content: b64 };
+        if (cur && cur.sha) payload.sha = cur.sha;
+        return fetch(api(), {
+          method: "PUT",
+          headers: { Authorization: "Bearer " + cfg.token, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      })
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (e) { throw new Error(e.message || ("HTTP " + r.status)); });
+        return true;
+      });
   }
 
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  // ---------- 操作 ----------
+  function connect() {
+    cfg.owner = $("in-owner").value.trim();
+    cfg.repo = $("in-repo").value.trim() || "hp-watcher";
+    cfg.token = $("in-token").value.trim();
+    cfg.interval = parseInt($("in-interval").value, 10) || 10;
+    cfg.cooldown = parseInt($("in-cooldown").value, 10) || 60;
 
-  // ── Actions ──
-  async function addUrl() {
-    const input = document.getElementById('url-input');
-    const errEl = document.getElementById('url-error');
-    let val = input.value.trim();
-    if (!val) { errEl.textContent = 'URLを入力してください'; return; }
-    if (!val.startsWith('http')) val = 'https://' + val;
-    try { new URL(val); } catch(e) { errEl.textContent = '正しいURLを入力してください'; return; }
-    if (urls.includes(val)) { errEl.textContent = '登録済みです'; return; }
+    if (!cfg.owner) { say("msg-setup", "GitHubユーザー名を入力してください", "bad"); return; }
+    if (!cfg.token) { say("msg-setup", "トークンを入力してください", "bad"); return; }
 
-    errEl.textContent = '';
-    const btn = document.getElementById('btn-add');
-    btn.disabled = true; btn.textContent = '...';
+    var b = $("btn-connect");
+    b.disabled = true; b.textContent = "接続中...";
+    say("msg-setup", "");
 
-    const next = [...urls, val];
-    const ok = await pushConfig(next);
-    if (ok) {
-      urls = next;
-      input.value = '';
-      addLog('追加: ' + val);
-      renderUrls();
-      toast('追加しました。次の巡回から監視開始します');
-    } else {
-      toast('GitHub更新に失敗しました');
-    }
-    btn.disabled = false; btn.textContent = '追加';
-  }
-
-  async function removeUrl(index) {
-    const url = urls[index];
-    const next = urls.filter((_, i) => i !== index);
-    const ok = await pushConfig(next);
-    if (ok) {
-      urls = next;
-      addLog('削除: ' + url);
-      renderUrls();
-      toast('削除しました');
-    } else {
-      toast('GitHub更新に失敗しました');
-    }
-  }
-
-  // ── Screen switching ──
-  function showSetup() {
-    document.getElementById('setup-screen').style.display = '';
-    document.getElementById('main-screen').style.display = 'none';
-    document.getElementById('s-owner').value = config.owner;
-    document.getElementById('s-repo').value = config.repo;
-    document.getElementById('s-token').value = config.token;
-    document.getElementById('s-interval').value = config.interval;
-    document.getElementById('s-cooldown').value = config.cooldown;
-  }
-
-  function showMain() {
-    document.getElementById('setup-screen').style.display = 'none';
-    document.getElementById('main-screen').style.display = '';
-    renderUrls();
-    renderLog();
-  }
-
-  // ── Setup save ──
-  async function saveSetup() {
-    const owner = document.getElementById('s-owner').value.trim();
-    const repo = document.getElementById('s-repo').value.trim();
-    const token = document.getElementById('s-token').value.trim();
-    const interval = parseInt(document.getElementById('s-interval').value) || 10;
-    const cooldown = parseInt(document.getElementById('s-cooldown').value) || 60;
-    const errEl = document.getElementById('s-error');
-
-    if (!owner || !token) { errEl.textContent = 'ユーザー名とトークンは必須です'; return; }
-
-    config = { owner, repo, token, interval, cooldown };
-    const btn = document.getElementById('s-save');
-    btn.disabled = true; btn.textContent = '接続テスト中...';
-    errEl.textContent = '';
-
-    const result = await fetchUrls();
-    if (result) {
-      urls = result.config.target_urls || [];
-      saveLocal();
-      showMain();
-      toast('接続しました');
-    } else {
-      // Try pushing to verify write access
-      const ok = await pushConfig(urls);
-      if (ok) {
-        saveLocal();
-        showMain();
-        toast('接続しました');
-      } else {
-        errEl.textContent = '接続できませんでした。ユーザー名・リポジトリ名・トークンを確認してください';
-      }
-    }
-    btn.disabled = false; btn.textContent = '接続してはじめる';
-  }
-
-  // ── Init ──
-  loadLocal();
-  if (config.owner && config.token) {
-    showMain();
-    fetchUrls().then(result => {
-      if (result) {
-        urls = result.config.target_urls || [];
-        renderUrls();
-      }
+    pull().then(function (res) {
+      urls = res.data.target_urls || [];
+      if (res.data.check_interval_minutes) cfg.interval = res.data.check_interval_minutes;
+      if (res.data.notification_cooldown_minutes) cfg.cooldown = res.data.notification_cooldown_minutes;
+      writeStore(); toMain(); flash("接続しました");
+    }).catch(function (err) {
+      say("msg-setup", "接続できません: " + err.message, "bad");
+    }).then(function () {
+      b.disabled = false; b.textContent = "接続してはじめる";
     });
+  }
+
+  function addUrl() {
+    var v = $("in-url").value.trim();
+    if (!v) { say("msg-url", "URLを入力してください", "bad"); return; }
+    if (v.indexOf("http") !== 0) v = "https://" + v;
+    try { new URL(v); } catch (e) { say("msg-url", "URLの形式が正しくありません", "bad"); return; }
+    if (urls.indexOf(v) >= 0) { say("msg-url", "すでに登録されています", "bad"); return; }
+
+    var b = $("btn-add");
+    b.disabled = true; b.textContent = "···";
+    say("msg-url", "");
+
+    var next = urls.concat([v]);
+    push(next).then(function () {
+      urls = next; $("in-url").value = "";
+      note("追加 " + v); drawUrls();
+      flash("追加しました。次の巡回から監視します");
+    }).catch(function (err) {
+      say("msg-url", "GitHubへの書き込みに失敗: " + err.message, "bad");
+    }).then(function () {
+      b.disabled = false; b.textContent = "追加";
+    });
+  }
+
+  function dropUrl(i) {
+    var target = urls[i];
+    var next = urls.filter(function (_, k) { return k !== i; });
+    push(next).then(function () {
+      urls = next; note("削除 " + target); drawUrls(); flash("削除しました");
+    }).catch(function (err) {
+      flash("削除に失敗: " + err.message);
+    });
+  }
+
+  // ---------- 起動 ----------
+  readStore();
+
+  $("btn-connect").onclick = connect;
+  $("btn-add").onclick = addUrl;
+  $("btn-config").onclick = toSetup;
+  $("in-url").onkeydown = function (e) { if (e.key === "Enter") addUrl(); };
+  $("in-token").onkeydown = function (e) { if (e.key === "Enter") connect(); };
+
+  if (cfg.owner && cfg.token) {
+    toMain();
+    pull().then(function (res) {
+      urls = res.data.target_urls || [];
+      drawUrls();
+    }).catch(function () {});
   } else {
-    showSetup();
+    toSetup();
   }
-
-  // ── Event listeners ──
-  document.getElementById('btn-add').addEventListener('click', addUrl);
-  document.getElementById('url-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addUrl();
-  });
-  document.getElementById('btn-setup').addEventListener('click', showSetup);
-  document.getElementById('s-save').addEventListener('click', saveSetup);
 })();
 </script>
 </body>
