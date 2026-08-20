@@ -1,6 +1,7 @@
 {
   "target_urls": [
-    "https://dnd-inc.jp/"
+    "https://dnd-inc.jp/",
+    "https://takahashitei-wa-sachiko.com/"
   ],
   "check_interval_minutes": 30,
   "notification_cooldown_minutes": 60
