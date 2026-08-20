@@ -2,17 +2,21 @@ name: HP電話番号監視
 
 on:
   schedule:
-    # 10分ごとに実行（UTC基準だが間隔なので時差は関係なし）
-    - cron: "*/10 * * * *"
-  # 手動実行もできるようにする
+    # 30分ごと。10分ごとにしたい場合は "*/10 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: phone-watcher
+  cancel-in-progress: false
+
 jobs:
   watch:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: リポジトリを取得
         uses: actions/checkout@v4
@@ -22,20 +26,48 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Pythonライブラリをインストール
+        run: pip install --quiet playwright pytesseract pillow
+
+      - name: OCRエンジンを準備
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr
+
+      - name: ブラウザをキャッシュから復元
+        id: browser-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-v1
+
+      - name: ブラウザを準備
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        run: python -m playwright install --with-deps chromium
+
+      - name: ブラウザの依存だけ入れる（キャッシュ利用時）
+        if: steps.browser-cache.outputs.cache-hit == 'true'
+        run: python -m playwright install-deps chromium
+
       - name: 監視スクリプトを実行
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python monitor.py
 
-      - name: 通知履歴を保存
+      - name: 履歴と監視リストを保存
+        if: always()
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add history.json
+          git add history.json config.json
           if git diff --staged --quiet; then
-            echo "履歴に変更なし"
+            echo "変更なし"
           else
-            git commit -m "通知履歴を更新"
-            git push
+            git commit -m "監視状態を更新"
+            for i in 1 2 3; do
+              git pull --rebase --autostash origin main && git push && break
+              echo "再試行 $i"
+              sleep 5
+            done
           fi
