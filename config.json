@@ -1,7 +1,9 @@
 {
   "target_urls": [
     "https://dnd-inc.jp/",
-    "https://takahashitei-wa-sachiko.com/"
+    "https://takahashitei-wa-sachiko.com/",
+    "https://www.minohome.co.jp/",
+    "https://rays-support.com/"
   ],
   "check_interval_minutes": 30,
   "notification_cooldown_minutes": 60
