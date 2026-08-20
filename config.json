@@ -2,7 +2,8 @@
   "target_urls": [
     "https://dnd-inc.jp/",
     "https://takahashitei-wa-sachiko.com/",
-    "https://otto-studio.jp/#services"
+    "https://otto-studio.jp/#services",
+    "https://luminalink-ai.com/"
   ],
   "check_interval_minutes": 30,
   "notification_cooldown_minutes": 60
