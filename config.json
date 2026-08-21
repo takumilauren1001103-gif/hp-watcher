@@ -7,18 +7,10 @@
     "https://sc-takatsukikammaki.jp/",
     "https://myonchi.com/",
     "https://urashirube.jp/",
-    "https://shiga-seibi.com/"
+    "https://shiga-seibi.com/",
+    "https://dnd-inc.jp/"
   ],
-  "notified_urls": [
-    {
-      "url": "https://dnd-inc.jp/",
-      "notified_at": "2026-08-21T14:15:17.377410+09:00",
-      "phones": [
-        "090-****-9984"
-      ],
-      "status": "notified"
-    }
-  ],
+  "notified_urls": [],
   "max_target_urls": 120,
   "batch_size": 10,
   "check_interval_minutes": 30,
