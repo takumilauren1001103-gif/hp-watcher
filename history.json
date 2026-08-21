@@ -5,12 +5,33 @@
   "detected": {
     "https://dnd-inc.jp/": "2026-08-21T14:15:17.377410+09:00"
   },
-  "failures": {},
+  "failures": {
+    "https://sc-takatsukikammaki.jp/": {
+      "count": 1,
+      "alerted": false,
+      "last_error": "<urlopen error timed out>"
+    },
+    "https://myonchi.com/": {
+      "count": 1,
+      "alerted": false,
+      "last_error": "<urlopen error timed out>"
+    },
+    "https://shiga-seibi.com/": {
+      "count": 1,
+      "alerted": false,
+      "last_error": "<urlopen error timed out>"
+    },
+    "https://dnd-inc.jp/": {
+      "count": 1,
+      "alerted": false,
+      "last_error": "<urlopen error timed out>"
+    }
+  },
   "url_state": {
     "https://takahashitei-wa-sachiko.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
@@ -22,8 +43,8 @@
     },
     "https://otto-studio.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
@@ -35,32 +56,29 @@
     },
     "https://luminalink-ai.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
-      "crawl_queue": [
-        "https://luminalink-ai.com/terms.html",
-        "https://luminalink-ai.com/index.html"
-      ],
+      "crawl_queue": [],
       "seen_pages": [
         "https://luminalink-ai.com/",
         "https://luminalink-ai.com/tokushoho.html",
-        "https://luminalink-ai.com/privacy.html"
+        "https://luminalink-ai.com/privacy.html",
+        "https://luminalink-ai.com/terms.html",
+        "https://luminalink-ai.com/index.html"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://greeon.co.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
       "crawl_queue": [
-        "https://greeon.co.jp/cdn-cgi/l/email-protection",
-        "https://greeon.co.jp/news",
         "https://greeon.co.jp/news/2026-05-15-greeon-founded",
         "https://greeon.co.jp/privacy",
         "https://greeon.co.jp/services"
@@ -68,17 +86,19 @@
       "seen_pages": [
         "https://greeon.co.jp/",
         "https://greeon.co.jp/contact",
-        "https://greeon.co.jp/about"
+        "https://greeon.co.jp/about",
+        "https://greeon.co.jp/cdn-cgi/l/email-protection",
+        "https://greeon.co.jp/news"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://sc-takatsukikammaki.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
       "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
-      "last_result": "ok_no_phone",
-      "last_error": null,
+      "last_result": "fetch_error",
+      "last_error": "<urlopen error timed out>",
       "crawl_queue": [
         "http://sc-takatsukikammaki.jp/company-info",
         "https://sc-takatsukikammaki.jp/companies/company-a",
@@ -163,10 +183,10 @@
     "https://myonchi.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
       "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
-      "last_result": "ok_no_phone",
-      "last_error": null,
+      "last_result": "fetch_error",
+      "last_error": "<urlopen error timed out>",
       "crawl_queue": [
         "https://myonchi.com/access.php",
         "https://myonchi.com/property/rental",
@@ -184,14 +204,12 @@
     },
     "https://urashirube.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
       "crawl_queue": [
-        "https://urashirube.jp/ad-policy",
-        "https://urashirube.jp/best/24jikan",
         "https://urashirube.jp/best/atobarai",
         "https://urashirube.jp/best/chat-uranai",
         "https://urashirube.jp/best/jojo-unei",
@@ -211,22 +229,25 @@
         "https://urashirube.jp/service/sela",
         "https://urashirube.jp/service/ulana",
         "https://urashirube.jp/service/vernis",
-        "https://urashirube.jp/services"
+        "https://urashirube.jp/services",
+        "https://urashirube.jp/service/spacia"
       ],
       "seen_pages": [
         "https://urashirube.jp/",
         "https://urashirube.jp/contact",
-        "https://urashirube.jp/about"
+        "https://urashirube.jp/about",
+        "https://urashirube.jp/ad-policy",
+        "https://urashirube.jp/best/24jikan"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://shiga-seibi.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
       "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
       "last_phone_detected_at": null,
-      "last_result": "ok_no_phone",
-      "last_error": null,
+      "last_result": "fetch_error",
+      "last_error": "<urlopen error timed out>",
       "crawl_queue": [
         "https://shiga-seibi.com/%e6%96%b0%e3%82%a6%e3%82%a7%e3%83%96%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92open%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81",
         "https://shiga-seibi.com/case",
@@ -256,6 +277,19 @@
         "https://shiga-seibi.com/company"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://dnd-inc.jp/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 0,
+      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "last_phone_detected_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_result": "fetch_error",
+      "last_error": "<urlopen error timed out>",
+      "crawl_queue": [],
+      "seen_pages": [
+        "https://dnd-inc.jp/"
+      ],
+      "last_discovery_at": "2026-08-21T14:29:15.579233+09:00"
     }
   },
   "removed": [],
@@ -333,6 +367,78 @@
       "pages": 3,
       "phones": [],
       "error": null
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://takahashitei-wa-sachiko.com/",
+      "result": "ok_no_phone",
+      "pages": 1,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://otto-studio.jp/",
+      "result": "ok_no_phone",
+      "pages": 1,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://luminalink-ai.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://greeon.co.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://sc-takatsukikammaki.jp/",
+      "result": "fetch_error",
+      "pages": 0,
+      "phones": [],
+      "error": "<urlopen error timed out>"
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://myonchi.com/",
+      "result": "fetch_error",
+      "pages": 0,
+      "phones": [],
+      "error": "<urlopen error timed out>"
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://urashirube.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://shiga-seibi.com/",
+      "result": "fetch_error",
+      "pages": 0,
+      "phones": [],
+      "error": "<urlopen error timed out>"
+    },
+    {
+      "at": "2026-08-21T14:29:15.579233+09:00",
+      "url": "https://dnd-inc.jp/",
+      "result": "fetch_error",
+      "pages": 0,
+      "phones": [],
+      "error": "<urlopen error timed out>"
     }
   ],
   "batch_cursor": 0
