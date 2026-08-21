@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """初回検出と番号変化通知のネットワーク不要な回帰テスト。"""
 import unittest
+from unittest.mock import patch
 
 import monitor
 
@@ -82,6 +83,34 @@ class PhoneChangeTests(unittest.TestCase):
             snapshot = monitor.update_phone_pages(state, [failed_page], self.cfg)
             self.assertEqual(snapshot["current"], {"09010139984"})
             self.assertIsNone(monitor.phone_event(state, snapshot))
+
+    def test_ocr_failure_marks_phone_absence_as_unreliable(self):
+        cfg = dict(self.cfg)
+        cfg.update({"use_ocr": True, "use_browser": False})
+        html = '<html><body><img src="/phone.png"></body></html>'
+        with patch.object(monitor, "fetch_simple", return_value=(html, None, 200)), patch.object(monitor, "ocr_images", return_value=("", "OCR timeout")):
+            result = monitor.scan_html_page(ROOT, cfg, allow_browser=False, allow_ocr=True)
+        self.assertFalse(result["presence_reliable"])
+        self.assertEqual(result["items"]["real"], [])
+
+    def test_prior_ocr_page_forces_ocr_even_when_html_has_a_phone(self):
+        cfg = dict(self.cfg)
+        cfg.update({"use_ocr": True, "use_browser": False})
+        html = '<html><body>03-4682-9751<img src="/phone.png"></body></html>'
+        with patch.object(monitor, "fetch_simple", return_value=(html, None, 200)), patch.object(monitor, "ocr_images", return_value=("090-1013-9984", None)) as ocr:
+            result = monitor.scan_html_page(ROOT, cfg, allow_browser=False, allow_ocr=True, force_ocr=True)
+        self.assertTrue(ocr.called)
+        self.assertEqual({phone for phone, _kind, _reason in result["items"]["real"]}, {"03-4682-9751", "090-1013-9984"})
+
+    def test_scan_site_forces_root_ocr_when_prior_phone_was_from_ocr(self):
+        cfg = dict(self.cfg)
+        cfg.update({"max_pages_per_site_run": 1})
+        state = {"crawl_queue": [], "seen_pages": [], "last_discovery_at": None,
+                 "phone_display": {"09010139984": {"phone": "090-1013-9984", "page_url": ROOT, "via": "ocr"}}}
+        root = {"url": ROOT, "html": "<html></html>", "title": "test", "items": {"real": [], "excluded": [], "suspect": []}, "via": None, "error": None, "status": 200, "presence_reliable": True}
+        with patch.object(monitor, "scan_html_page", return_value=root) as scan:
+            monitor.scan_site(ROOT, cfg, state, monitor.now_jst())
+        self.assertTrue(scan.call_args.kwargs["force_ocr"])
 
     def test_change_message_explains_added_and_removed_numbers(self):
         state = self.state()

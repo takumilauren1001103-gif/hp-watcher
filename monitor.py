@@ -429,17 +429,23 @@ def ocr_images(html, base_url, limit):
         from PIL import Image
     except ImportError:
         return "", "OCRライブラリが未インストール"
-    texts = []
+    texts, errors = [], []
     for url in collect_images(html, base_url, limit):
         data, error = fetch_binary(url)
-        if not data: continue
+        if not data:
+            errors.append(error or f"画像を取得できません: {url}")
+            continue
         try:
             image = Image.open(io.BytesIO(data))
-            if image.width < 60 or image.height < 20: continue
-            if image.width < 600: image = image.resize((image.width * 2, image.height * 2))
+            if image.width < 60 or image.height < 20:
+                continue
+            if image.width < 600:
+                image = image.resize((image.width * 2, image.height * 2))
             texts.append(pytesseract.image_to_string(image, lang="eng", timeout=5))
-        except Exception: continue
-    return "\n".join(texts), None
+        except Exception as err:
+            errors.append(f"OCR失敗: {type(err).__name__}")
+    # HTMLに画像が無い場合は正常な「番号なし」。画像があり処理に失敗した場合だけ不確実とする。
+    return "\n".join(texts), (" / ".join(errors[:3]) if errors else None)
 
 
 def extract_pdf_phones(pdf_url, cfg):
@@ -485,7 +491,7 @@ def relevant_links(html, page_url, root_url, max_pages, max_pdfs):
     return pages, pdfs
 
 
-def scan_html_page(page_url, cfg, allow_browser=False, allow_ocr=False):
+def scan_html_page(page_url, cfg, allow_browser=False, allow_ocr=False, force_ocr=False):
     html, error, status = fetch_simple(page_url)
     empty = {"real": [], "excluded": [], "suspect": []}
     if html is None:
@@ -503,8 +509,11 @@ def scan_html_page(page_url, cfg, allow_browser=False, allow_ocr=False):
         elif browser_error:
             # JS描画に失敗した空ページを「番号が削除された」とは扱わない。
             presence_reliable = False
-    if allow_ocr and not items["real"] and cfg.get("use_ocr", True):
-        otext, _ = ocr_images(html, page_url, int(cfg.get("ocr_max_images", 2)))
+    if allow_ocr and (not items["real"] or force_ocr) and cfg.get("use_ocr", True):
+        otext, ocr_error = ocr_images(html, page_url, int(cfg.get("ocr_max_images", 2)))
+        if ocr_error:
+            # 画像取得/OCR失敗時の空結果は「掲載削除」と扱わない。
+            presence_reliable = False
         if otext:
             fresh = find_phones(clean_text(otext), cfg)
             for key in items: items[key].extend(x for x in fresh[key] if x not in items[key])
@@ -547,7 +556,10 @@ def scan_site(root_url, cfg, state=None, now=None):
     state = state if state is not None else {"crawl_queue": [], "seen_pages": [], "last_discovery_at": None}
     reset_discovery_if_due(state, root_url, cfg, now)
     deadline = time.monotonic() + max(15, int(cfg.get("max_seconds_per_site", 45)))
-    root = scan_html_page(root_url, cfg, allow_browser=True, allow_ocr=True)
+    # 過去に画像OCRで番号を見つけたルートは、HTML番号があっても画像を再確認する。
+    prior_display = state.get("phone_display", {}) if isinstance(state.get("phone_display", {}), dict) else {}
+    force_root_ocr = any(info.get("page_url") == root_url and info.get("via") == "ocr" for info in prior_display.values() if isinstance(info, dict))
+    root = scan_html_page(root_url, cfg, allow_browser=True, allow_ocr=True, force_ocr=force_root_ocr)
     if root["error"]:
         return {"error": root["error"], "title": None, "real": [], "excluded": [], "suspect": [], "pages": [], "state": state}
     state["seen_pages"] = list(dict.fromkeys([root_url] + state.get("seen_pages", [])))[:int(cfg.get("max_crawl_queue_per_site", 200))]

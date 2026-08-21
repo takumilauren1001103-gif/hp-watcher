@@ -55,7 +55,7 @@ jobs:
         if: steps.browser-cache.outputs.cache-hit == 'true'
         run: python -m playwright install-deps chromium
       - name: 監視ロジックを検証
-        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py test_sheets_storage.py
+        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py test_sheets_storage.py test_phone_changes.py
       - name: 監視スクリプトを実行
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -134,7 +134,7 @@ jobs:
         if: steps.browser-cache.outputs.cache-hit == 'true'
         run: python -m playwright install-deps chromium
       - name: 監視ロジックを検証
-        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py test_sheets_storage.py
+        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py test_sheets_storage.py test_phone_changes.py
       - name: 監視スクリプトを実行
         env:
           STORAGE_BACKEND: sheets

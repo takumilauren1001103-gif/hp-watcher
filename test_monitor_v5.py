@@ -34,7 +34,7 @@ class MonitorV5Test(unittest.TestCase):
 
     def test_scan_site_advances_queue_in_small_steps(self):
         root_html = '''<a href="/tokushoho.html">特商法</a><a href="/a.html">A</a><a href="/b.html">B</a><a href="/c.html">C</a>'''
-        def page(url, cfg, allow_browser=False, allow_ocr=False):
+        def page(url, cfg, allow_browser=False, allow_ocr=False, force_ocr=False):
             return {"url": url, "html": root_html if url.endswith("/") else "", "title": "title", "items": {"real": [], "excluded": [], "suspect": []}, "via": None, "error": None, "status": 200}
         state = {"crawl_queue": [], "seen_pages": [], "last_discovery_at": None}
         with patch.object(monitor, "scan_html_page", side_effect=page), patch.object(monitor.time, "sleep"):
