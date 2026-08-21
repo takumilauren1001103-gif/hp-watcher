@@ -21,6 +21,10 @@ def active_row(url, state, failures, now):
         state.get("last_result", "unknown"), state.get("last_error") or "", int(failure.get("count", 0)),
         str(bool(failure.get("alerted", False))).lower(), json.dumps(state.get("crawl_queue", []), ensure_ascii=False),
         json.dumps(state.get("seen_pages", []), ensure_ascii=False), state.get("last_discovery_at") or "", 1, now,
+        json.dumps(state.get("phone_pages", {}), ensure_ascii=False),
+        json.dumps(state.get("phone_absence_counts", {}), ensure_ascii=False),
+        json.dumps(state.get("last_notified_phone_set"), ensure_ascii=False),
+        json.dumps(state.get("phone_display", {}), ensure_ascii=False),
     ]
 
 

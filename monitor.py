@@ -34,6 +34,8 @@ DEFAULTS = {
     "request_interval_seconds": 2, "rediscover_days": 7,
     "purge_no_phone_days": 40, "min_successful_checks_before_purge": 5,
     "error_alert_after": 3,
+    # ページで番号が空になった場合、連続した正常取得で確認してから削除とみなす。
+    "phone_change_remove_confirmations": 2,
 }
 
 ASSET_SUFFIXES = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".ico", ".css", ".js", ".mjs", ".map", ".zip", ".mp4", ".mp3", ".woff", ".woff2", ".ttf")
@@ -188,6 +190,12 @@ def ensure_state(history, url, now):
     state.setdefault("last_discovery_at", None)
     state.setdefault("next_due_at", None)
     state.setdefault("lease_until", None)
+    # page URL -> 正規化済み電話番号の配列。部分巡回でも未取得ページの値を消さない。
+    state.setdefault("phone_pages", {})
+    state.setdefault("phone_absence_counts", {})
+    # Telegram送信に成功した直後のURL全体の番号集合。Noneはまだ一度も通知していない状態。
+    state.setdefault("last_notified_phone_set", None)
+    state.setdefault("phone_display", {})
     return state
 
 
@@ -267,7 +275,7 @@ def classify(phone):
 
 
 LABEL = {"mobile": "携帯", "landline": "固定電話", "tollfree": "フリーダイヤル"}
-KNOWN_DUMMIES = {"09012345678", "08012345678", "07012345678", "09000000000", "08000000000", "07000000000", "09011111111", "09012341234", "09098765432", "0312345678", "0698765432", "0612345678", "0120000000", "0120123456", "08001234567", "0123456789", "0111111111"}
+KNOWN_DUMMIES = {"09012345678", "08012345678", "07012345678", "09000000000", "08000000000", "07000000000", "09011111111", "09012341234", "09098765432", "0312345678", "0698765432", "0612345678", "0120000000", "0120123456", "08001234567", "0123456789", "0111111111", "0489000000"}
 
 
 def phone_disposition(phone):
@@ -483,21 +491,25 @@ def scan_html_page(page_url, cfg, allow_browser=False, allow_ocr=False):
     if html is None:
         return {"url": page_url, "html": "", "title": None, "items": empty, "via": None, "error": error, "status": status}
     title, items, via = get_title(html), find_phones(clean_text(html), cfg), None
+    presence_reliable = True
     if items["real"]: via = "html"
     if allow_browser and not items["real"] and cfg.get("use_browser", True) and looks_js_rendered(html):
-        rendered, _ = fetch_browser(page_url)
+        rendered, browser_error = fetch_browser(page_url)
         if rendered:
             html = rendered; title = get_title(rendered) or title
             fresh = find_phones(clean_text(html), cfg)
             for key in items: items[key].extend(x for x in fresh[key] if x not in items[key])
             if items["real"]: via = "browser"
+        elif browser_error:
+            # JS描画に失敗した空ページを「番号が削除された」とは扱わない。
+            presence_reliable = False
     if allow_ocr and not items["real"] and cfg.get("use_ocr", True):
         otext, _ = ocr_images(html, page_url, int(cfg.get("ocr_max_images", 2)))
         if otext:
             fresh = find_phones(clean_text(otext), cfg)
             for key in items: items[key].extend(x for x in fresh[key] if x not in items[key])
             if fresh["real"]: via = "ocr"
-    return {"url": page_url, "html": html, "title": title, "items": items, "via": via, "error": None, "status": status}
+    return {"url": page_url, "html": html, "title": title, "items": items, "via": via, "error": None, "status": status, "presence_reliable": presence_reliable}
 
 
 # ──────────────────────────────────────────────
@@ -619,6 +631,118 @@ def move_to_notified(cfg, root_url, items, now):
 
 
 # ──────────────────────────────────────────────
+# 番号の初回・変化通知
+# ──────────────────────────────────────────────
+def _page_phone_map(page):
+    """正常取得できた1ページから、数字のみをキーにした番号情報を作る。"""
+    out = {}
+    for phone, kind, _reason in page.get("items", {}).get("real", []):
+        key = normalize(phone)
+        if key:
+            out[key] = {"phone": phone, "kind": kind, "page_url": page.get("url", ""), "via": page.get("via") or "html"}
+    return out
+
+
+def update_phone_pages(state, pages, cfg):
+    """成功したページだけを更新し、未巡回・取得失敗ページの過去番号は残す。
+
+    番号が消えた判定は同じページで連続した正常取得を確認してから確定する。
+    これにより、3ページずつの段階巡回やJS描画失敗で誤削除通知しない。
+    """
+    phone_pages = state.setdefault("phone_pages", {})
+    absence_all = state.setdefault("phone_absence_counts", {})
+    display = state.setdefault("phone_display", {})
+    before_display = dict(display)
+    before = {phone for values in phone_pages.values() for phone in values}
+    confirms = max(1, int(cfg.get("phone_change_remove_confirmations", 2)))
+
+    for page in pages:
+        if page.get("error") or not page.get("presence_reliable", True):
+            continue
+        page_url = page.get("url")
+        if not page_url:
+            continue
+        current_map = _page_phone_map(page)
+        prior = set(phone_pages.get(page_url, []))
+        prior_counts = absence_all.get(page_url, {})
+        counts = dict(prior_counts) if isinstance(prior_counts, dict) else {}
+        effective = set(current_map)
+        for phone in prior:
+            if phone in current_map:
+                counts.pop(phone, None)
+                continue
+            count = int(counts.get(phone, 0)) + 1
+            if count < confirms:
+                counts[phone] = count
+                effective.add(phone)
+            else:
+                counts.pop(phone, None)
+        phone_pages[page_url] = sorted(effective)
+        if counts:
+            absence_all[page_url] = counts
+        else:
+            absence_all.pop(page_url, None)
+        display.update(current_map)
+
+    current = {phone for values in phone_pages.values() for phone in values}
+    for phone in list(display):
+        if phone not in current:
+            display.pop(phone, None)
+    return {"before": before, "current": current, "before_display": before_display, "display": dict(display)}
+
+
+def phone_event(state, snapshot):
+    """最後にTelegram送信した集合との差から、送るべきイベントを返す。"""
+    current = set(snapshot["current"])
+    baseline = state.get("last_notified_phone_set")
+    if baseline is None:
+        if not current:
+            return None
+        return {"type": "initial", "added": sorted(current), "removed": [], "current": sorted(current)}
+    previous = set(baseline)
+    added, removed = sorted(current - previous), sorted(previous - current)
+    if not added and not removed:
+        return None
+    return {"type": "changed", "added": added, "removed": removed, "current": sorted(current)}
+
+
+def _phone_line(phone_key, display, root_url):
+    info = display.get(phone_key, {})
+    phone = info.get("phone") or phone_key
+    kind = info.get("kind") or classify(phone_key) or "landline"
+    source = {"browser": "JS描画", "ocr": "画像OCR", "pdf": "PDF本文"}.get(info.get("via"), "HTML")
+    page_url = info.get("page_url") or root_url
+    page_line = "" if page_url == root_url else f"\n　　掲載ページ: {page_url}"
+    return f"　・{phone}（{LABEL.get(kind, '電話')}・{source}）{page_line}"
+
+
+def build_change_message(root_url, event, snapshot, title, now):
+    if event["type"] == "initial":
+        heading = "【電話番号を初めて検知しました】"
+    else:
+        heading = "【電話番号の変化を検知しました】"
+    lines = [heading, "", f"監視URL：{root_url}", f"検知日時：{now.strftime('%Y-%m-%d %H:%M:%S')}"]
+    if event["added"]:
+        label = "初回確認した番号：" if event["type"] == "initial" else "追加・差替えで確認した番号："
+        lines.extend([label, "\n".join(_phone_line(phone, snapshot["display"], root_url) for phone in event["added"])])
+    if event["removed"]:
+        lines.extend(["掲載がなくなったことを確認した番号：", "\n".join(_phone_line(phone, snapshot["before_display"], root_url) for phone in event["removed"])])
+    lines.extend([f"トップページタイトル：{title or '(タイトルなし)'}", "", "※同じURLは継続監視します。次回以降の番号変更も通知します。"])
+    return "\n".join(lines)
+
+
+def record_notification_event(history, root_url, event, snapshot, now):
+    history.setdefault("notification_events", []).append({
+        "url": root_url,
+        "at": now.isoformat(),
+        "event_type": event["type"],
+        "phones": [mask_phone(phone) for phone in event["current"]],
+        "added": [mask_phone(phone) for phone in event["added"]],
+        "removed": [mask_phone(phone) for phone in event["removed"]],
+    })
+
+
+# ──────────────────────────────────────────────
 # 実行
 # ──────────────────────────────────────────────
 def main():
@@ -659,18 +783,34 @@ def main():
         history["failures"].pop(url, None); state["successful_checks"] = int(state.get("successful_checks", 0)) + 1; state.update({"last_checked_at": now.isoformat(), "last_error": None})
         if result["excluded"]: print(f"  見本番号として除外: {[p for p, *_ in result['excluded']]}")
         if result["suspect"]: print(f"  要確認パターン: {[p for p, *_ in result['suspect']]}")
-        if not result["real"]:
-            state["last_result"] = "suspect_only" if result["suspect"] else "ok_no_phone"; recent_run(history, now, url, state["last_result"], len(result["pages"])); print(f"  通知対象なし（今回{len(result['pages'])}ページ、待機キュー{len(state['crawl_queue'])}件）"); continue
-        state["last_result"] = "phone_detected"; state["last_phone_detected_at"] = now.isoformat(); history["detected"].setdefault(url, now.isoformat())
-        fresh = [x for x in result["real"] if not is_in_cooldown(history, url, x[0], cfg.get("notification_cooldown_minutes", 60))]
-        if not fresh:
-            recent_run(history, now, url, "phone_detected", len(result["pages"]), [x[0] for x in result["real"]]); print("  通知済み（再通知抑止中）"); continue
-        print(f"  検出: {[p for p, *_ in fresh]}")
-        if send_telegram(token, chat_id, build_message(url, fresh, result["title"], now)):
-            for phone, *_ in fresh: history["notified"][f"{url}|{normalize(phone)}"] = now.isoformat()
-            move_to_notified(cfg, url, fresh, now); history["url_state"].pop(url, None); recent_run(history, now, url, "notified", len(result["pages"]), [x[0] for x in fresh]); config_changed = True
+        # 部分巡回でもページごとの最後の正常値を保持してURL全体の集合を作る。
+        snapshot = update_phone_pages(state, result["pages"], cfg)
+        current_phones = sorted(snapshot["current"])
+        if current_phones:
+            state["last_phone_detected_at"] = now.isoformat()
+            history["detected"].setdefault(url, now.isoformat())
+        event = phone_event(state, snapshot)
+        if not event:
+            state["last_result"] = "phone_unchanged" if current_phones else ("suspect_only" if result["suspect"] else "ok_no_phone")
+            recent_run(history, now, url, state["last_result"], len(result["pages"]), current_phones)
+            print(f"  有効番号の変化なし（今回{len(result['pages'])}ページ、待機キュー{len(state['crawl_queue'])}件）")
+            continue
+        added_display = [snapshot["display"].get(phone, {}).get("phone", phone) for phone in event["added"]]
+        removed_display = [snapshot["before_display"].get(phone, {}).get("phone", phone) for phone in event["removed"]]
+        print(f"  番号イベント: {event['type']} / 追加: {added_display} / 削除: {removed_display}")
+        message = build_change_message(url, event, snapshot, result["title"], now)
+        if send_telegram(token, chat_id, message):
+            # 成功した集合だけを次の比較基準にする。URLは通知済みに移さず継続監視する。
+            state["last_notified_phone_set"] = event["current"]
+            record_notification_event(history, url, event, snapshot, now)
+            state["last_result"] = "phone_initial" if event["type"] == "initial" else "phone_changed"
+            for phone in event["current"]:
+                history["notified"][f"{url}|{phone}"] = now.isoformat()
+            recent_run(history, now, url, state["last_result"], len(result["pages"]), current_phones)
         else:
-            send_failed += 1; recent_run(history, now, url, "notification_failed", len(result["pages"]), [x[0] for x in fresh])
+            send_failed += 1
+            state["last_result"] = "notification_failed"
+            recent_run(history, now, url, "notification_failed", len(result["pages"]), current_phones)
 
     if storage:
         storage.stage_config(cfg)

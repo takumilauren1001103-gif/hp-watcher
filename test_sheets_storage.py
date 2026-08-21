@@ -93,12 +93,20 @@ class SheetsStorageTests(unittest.TestCase):
         store = FakeStorage(data, shard)
         cfg = store.load_config({"batch_size": 11, "max_target_urls": 500})
         history = store.load_history()
-        history["url_state"][url].update({"successful_checks": 2, "last_result": "ok_no_phone", "last_checked_at": "2026-08-21T01:00:00+09:00"})
+        history["url_state"][url].update({
+            "successful_checks": 2, "last_result": "phone_changed", "last_checked_at": "2026-08-21T01:00:00+09:00",
+            "phone_pages": {url: ["09010139984"]}, "phone_absence_counts": {},
+            "last_notified_phone_set": ["09010139984"],
+            "phone_display": {"09010139984": {"phone": "090-1013-9984", "kind": "mobile"}},
+        })
         history["recent_runs"].append({"at": "2026-08-21T01:00:00+09:00", "url": url, "result": "ok_no_phone", "pages": 2, "phones": [], "error": None})
         store.save(cfg, history)
-        self.assertEqual(len(ACTIVE_HEADERS), 19)
-        self.assertEqual(store.updates[0]["range"], "Active_URLs!A2:S2")
-        self.assertEqual(store.updates[0]["values"][0][8], 2)
+        self.assertEqual(len(ACTIVE_HEADERS), 23)
+        state_updates = [item for item in store.updates if item["range"].startswith("Active_URLs!A2:")]
+        self.assertEqual(state_updates[0]["range"], "Active_URLs!A2:W2")
+        self.assertEqual(state_updates[0]["values"][0][8], 2)
+        self.assertEqual(state_updates[0]["values"][0][19], '{"https://owned.example/": ["09010139984"]}')
+        self.assertEqual(state_updates[0]["values"][0][21], '["09010139984"]')
         history_appends = [values for tab, values in store.appended if tab == SHEET_NAMES["recent"]]
         self.assertEqual(len(history_appends), 1)
         self.assertEqual(history_appends[0][0][1], url)

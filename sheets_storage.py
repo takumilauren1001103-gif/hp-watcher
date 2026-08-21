@@ -28,6 +28,7 @@ ACTIVE_HEADERS = [
     "url", "shard", "status", "added_at", "next_due_at", "lease_until", "lease_owner",
     "last_checked_at", "successful_checks", "last_phone_detected_at", "last_result", "last_error", "failure_count", "failure_alerted",
     "crawl_queue_json", "seen_pages_json", "last_discovery_at", "version", "updated_at",
+    "phone_pages_json", "phone_absence_counts_json", "last_notified_phone_set_json", "phone_display_json",
 ]
 NOTIFIED_HEADERS = ["url", "notified_at", "phones_json", "status", "updated_at"]
 RECENT_HEADERS = ["at", "url", "result", "pages", "phones_json", "error", "run_id", "worker_id"]
@@ -139,7 +140,7 @@ class SheetsStorage:
         if add:
             service.spreadsheets().batchUpdate(spreadsheetId=self.spreadsheet_id, body={"requests": add}).execute()
         self._batch_update([
-            {"range": f"{SHEET_NAMES['active']}!A1:S1", "values": [ACTIVE_HEADERS]},
+            {"range": f"{SHEET_NAMES['active']}!A1:W1", "values": [ACTIVE_HEADERS]},
             {"range": f"{SHEET_NAMES['notified']}!A1:E1", "values": [NOTIFIED_HEADERS]},
             {"range": f"{SHEET_NAMES['recent']}!A1:H1", "values": [RECENT_HEADERS]},
             {"range": f"{SHEET_NAMES['removed']}!A1:E1", "values": [REMOVED_HEADERS]},
@@ -164,10 +165,13 @@ class SheetsStorage:
         return out
 
     def load_config(self, defaults: dict[str, Any]) -> dict[str, Any]:
+        # 既存シートにも新しい状態列の見出しを安全に追加する。担当0だけが行う。
+        if self.shard_id == 0:
+            self._batch_update([{"range": f"{SHEET_NAMES['active']}!A1:W1", "values": [ACTIVE_HEADERS]}])
         cfg = dict(defaults)
         cfg.update(self._load_settings())
         rows = self._values_get([
-            f"{SHEET_NAMES['active']}!A2:S",
+            f"{SHEET_NAMES['active']}!A2:W",
             f"{SHEET_NAMES['notified']}!A2:E",
         ])
         active = rows.get(SHEET_NAMES["active"], [])
@@ -206,6 +210,10 @@ class SheetsStorage:
                 "failure_alerted": _cell(row, 13, "false").lower() == "true",
                 "crawl_queue": _json(_cell(row, 14), []), "seen_pages": _json(_cell(row, 15), []),
                 "last_discovery_at": _cell(row, 16) or None,
+                "phone_pages": _json(_cell(row, 19), {}),
+                "phone_absence_counts": _json(_cell(row, 20), {}),
+                "last_notified_phone_set": _json(_cell(row, 21), None),
+                "phone_display": _json(_cell(row, 22), {}),
             }
             if history["url_state"][url]["failure_count"]:
                 history["failures"][url] = {"count": history["url_state"][url]["failure_count"], "alerted": history["url_state"][url]["failure_alerted"]}
@@ -266,7 +274,7 @@ class SheetsStorage:
         active_now = set(cfg.get("target_urls", []))
         notified_now = {str(item.get("url")): item for item in cfg.get("notified_urls", []) if isinstance(item, dict)}
         # 管理画面から状態が変わった行は、実行開始時の古い状態で上書きしない。
-        latest_rows = self._values_get([f"{SHEET_NAMES['active']}!A2:S"]).get(SHEET_NAMES["active"], [])
+        latest_rows = self._values_get([f"{SHEET_NAMES['active']}!A2:W"]).get(SHEET_NAMES["active"], [])
         latest_by_url = {str(_cell(row, 0)): row for row in latest_rows if _cell(row, 0)}
         updates: list[dict[str, Any]] = []
         removed: list[list[Any]] = []
@@ -288,14 +296,18 @@ class SheetsStorage:
                     json.dumps(state.get("crawl_queue", []), ensure_ascii=False),
                     json.dumps(state.get("seen_pages", []), ensure_ascii=False), state.get("last_discovery_at", ""),
                     source["version"] + 1, now,
+                    json.dumps(state.get("phone_pages", {}), ensure_ascii=False),
+                    json.dumps(state.get("phone_absence_counts", {}), ensure_ascii=False),
+                    json.dumps(state.get("last_notified_phone_set"), ensure_ascii=False),
+                    json.dumps(state.get("phone_display", {}), ensure_ascii=False),
                 ]
             else:
                 item = notified_now.get(url)
                 status = "notified" if item else "removed"
-                row = [url, self.shard_id, status, _cell(source["raw"], 3, now), "", "", self.worker_id, now, _cell(source["raw"], 8, "0"), "", status, "", 0, "false", "[]", "[]", "", source["version"] + 1, now]
+                row = [url, self.shard_id, status, _cell(source["raw"], 3, now), "", "", self.worker_id, now, _cell(source["raw"], 8, "0"), "", status, "", 0, "false", "[]", "[]", "", source["version"] + 1, now, "{}", "{}", "null", "{}"]
                 if status == "removed":
                     removed.append([url, now, "no_phone_after_40_days", _cell(source["raw"], 8, "0"), now])
-            updates.append({"range": f"{SHEET_NAMES['active']}!A{source['sheet_row']}:S{source['sheet_row']}", "values": [row]})
+            updates.append({"range": f"{SHEET_NAMES['active']}!A{source['sheet_row']}:W{source['sheet_row']}", "values": [row]})
             updated_urls.add(url)
         self._batch_update(updates)
         newly_notified = [item for url, item in notified_now.items() if url in updated_urls and url not in {x.get("url") for x in self._notified_urls}]
@@ -313,12 +325,12 @@ class SheetsStorage:
 
 
 def add_active_url(service: Any, spreadsheet_id: str, url: str, added_at: str | None = None, shard_count: int = 4) -> int:
-    """管理画面連携用の共通仕様。呼出し元は同じ19列を追加する。"""
+    """管理画面連携用の共通仕様。呼出し元は同じ23列を追加する。"""
     stamp = added_at or datetime.now(JST).isoformat()
     shard = shard_for_url(url, shard_count)
-    values = [[url, shard, "active", stamp, stamp, "", "", "", 0, "", "unknown", "", 0, "false", "[]", "[]", "", 1, stamp]]
+    values = [[url, shard, "active", stamp, stamp, "", "", "", 0, "", "unknown", "", 0, "false", "[]", "[]", "", 1, stamp, "{}", "{}", "null", "{}"]]
     service.spreadsheets().values().append(
-        spreadsheetId=spreadsheet_id, range=f"{SHEET_NAMES['active']}!A:S", valueInputOption="RAW",
+        spreadsheetId=spreadsheet_id, range=f"{SHEET_NAMES['active']}!A:W", valueInputOption="RAW",
         insertDataOption="INSERT_ROWS", body={"values": values}
     ).execute()
     return shard
