@@ -1,5 +1,339 @@
 {
-  "notified": {},
-  "detected": {},
-  "failures": {}
+  "notified": {
+    "https://dnd-inc.jp/|09010139984": "2026-08-21T14:15:17.377410+09:00"
+  },
+  "detected": {
+    "https://dnd-inc.jp/": "2026-08-21T14:15:17.377410+09:00"
+  },
+  "failures": {},
+  "url_state": {
+    "https://takahashitei-wa-sachiko.com/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [],
+      "seen_pages": [
+        "https://takahashitei-wa-sachiko.com/"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://otto-studio.jp/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [],
+      "seen_pages": [
+        "https://otto-studio.jp/"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://luminalink-ai.com/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "https://luminalink-ai.com/terms.html",
+        "https://luminalink-ai.com/index.html"
+      ],
+      "seen_pages": [
+        "https://luminalink-ai.com/",
+        "https://luminalink-ai.com/tokushoho.html",
+        "https://luminalink-ai.com/privacy.html"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://greeon.co.jp/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "https://greeon.co.jp/cdn-cgi/l/email-protection",
+        "https://greeon.co.jp/news",
+        "https://greeon.co.jp/news/2026-05-15-greeon-founded",
+        "https://greeon.co.jp/privacy",
+        "https://greeon.co.jp/services"
+      ],
+      "seen_pages": [
+        "https://greeon.co.jp/",
+        "https://greeon.co.jp/contact",
+        "https://greeon.co.jp/about"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://sc-takatsukikammaki.jp/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "http://sc-takatsukikammaki.jp/company-info",
+        "https://sc-takatsukikammaki.jp/companies/company-a",
+        "https://sc-takatsukikammaki.jp/companies/company-b",
+        "https://sc-takatsukikammaki.jp/companies/company-c",
+        "http://sc-takatsukikammaki.jp/advertise",
+        "http://sc-takatsukikammaki.jp/companies",
+        "http://sc-takatsukikammaki.jp/housing",
+        "http://sc-takatsukikammaki.jp/jobs",
+        "http://sc-takatsukikammaki.jp/kurashi",
+        "http://sc-takatsukikammaki.jp/news",
+        "http://sc-takatsukikammaki.jp/realestate",
+        "http://sc-takatsukikammaki.jp/subsidy",
+        "https://sc-takatsukikammaki.jp/area",
+        "https://sc-takatsukikammaki.jp/area/funabashi",
+        "https://sc-takatsukikammaki.jp/area/ichikawa",
+        "https://sc-takatsukikammaki.jp/area/kamagaya",
+        "https://sc-takatsukikammaki.jp/area/kashiwa",
+        "https://sc-takatsukikammaki.jp/area/kasukabe",
+        "https://sc-takatsukikammaki.jp/area/kawaguchi",
+        "https://sc-takatsukikammaki.jp/area/koshigaya",
+        "https://sc-takatsukikammaki.jp/area/matsudo",
+        "https://sc-takatsukikammaki.jp/area/misato",
+        "https://sc-takatsukikammaki.jp/area/nagareyama",
+        "https://sc-takatsukikammaki.jp/area/soka",
+        "https://sc-takatsukikammaki.jp/area/yashio",
+        "https://sc-takatsukikammaki.jp/area/yoshikawa",
+        "https://sc-takatsukikammaki.jp/companies",
+        "https://sc-takatsukikammaki.jp/housing-cat",
+        "https://sc-takatsukikammaki.jp/housing-cat/exterior",
+        "https://sc-takatsukikammaki.jp/housing-cat/exterior-wall",
+        "https://sc-takatsukikammaki.jp/housing-cat/insulation",
+        "https://sc-takatsukikammaki.jp/housing-cat/newbuild",
+        "https://sc-takatsukikammaki.jp/housing-cat/realestate",
+        "https://sc-takatsukikammaki.jp/housing-cat/renovation",
+        "https://sc-takatsukikammaki.jp/housing-cat/water-facilities",
+        "https://sc-takatsukikammaki.jp/jobs",
+        "https://sc-takatsukikammaki.jp/jobs/job-architect-c-koshigaya",
+        "https://sc-takatsukikammaki.jp/jobs/job-reform-sales-b-kashiwa",
+        "https://sc-takatsukikammaki.jp/jobs/job-site-manager-a-funabashi",
+        "https://sc-takatsukikammaki.jp/kurashi",
+        "https://sc-takatsukikammaki.jp/news",
+        "https://sc-takatsukikammaki.jp/news/funabashi-companies-2026",
+        "https://sc-takatsukikammaki.jp/news/funabashi-hojokin-2026",
+        "https://sc-takatsukikammaki.jp/news/funabashi-news-2026",
+        "https://sc-takatsukikammaki.jp/news/kamagaya-companies-2026",
+        "https://sc-takatsukikammaki.jp/news/kamagaya-hojokin-2026",
+        "https://sc-takatsukikammaki.jp/news/kamagaya-news-2026",
+        "https://sc-takatsukikammaki.jp/news/tag/%e3%83%aa%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0",
+        "https://sc-takatsukikammaki.jp/news/tag/%e5%86%85%e7%aa%93",
+        "https://sc-takatsukikammaki.jp/news/tag/%e5%b7%9d%e5%8f%a3%e5%b8%82",
+        "https://sc-takatsukikammaki.jp/news/tag/%e6%96%ad%e7%86%b1",
+        "https://sc-takatsukikammaki.jp/news/tag/%e6%9f%8f%e5%b8%82",
+        "https://sc-takatsukikammaki.jp/news/tag/%e6%b1%82%e4%ba%ba",
+        "https://sc-takatsukikammaki.jp/news/tag/%e8%88%b9%e6%a9%8b%e5%b8%82",
+        "https://sc-takatsukikammaki.jp/news/tag/%e8%a3%9c%e5%8a%a9%e9%87%91",
+        "https://sc-takatsukikammaki.jp/news/tag/%e8%b6%8a%e8%b0%b7%e5%b8%82",
+        "https://sc-takatsukikammaki.jp/realestate",
+        "https://sc-takatsukikammaki.jp/subsidy",
+        "http://sc-takatsukikammaki.jp/",
+        "http://sc-takatsukikammaki.jp/area/funabashi",
+        "http://sc-takatsukikammaki.jp/area/ichikawa",
+        "http://sc-takatsukikammaki.jp/area/kamagaya",
+        "http://sc-takatsukikammaki.jp/area/kashiwa",
+        "http://sc-takatsukikammaki.jp/area/kasukabe",
+        "http://sc-takatsukikammaki.jp/area/kawaguchi",
+        "http://sc-takatsukikammaki.jp/area/koshigaya",
+        "http://sc-takatsukikammaki.jp/area/matsudo",
+        "http://sc-takatsukikammaki.jp/area/misato",
+        "http://sc-takatsukikammaki.jp/area/nagareyama",
+        "http://sc-takatsukikammaki.jp/area/soka",
+        "http://sc-takatsukikammaki.jp/area/yashio",
+        "http://sc-takatsukikammaki.jp/area/yoshikawa"
+      ],
+      "seen_pages": [
+        "https://sc-takatsukikammaki.jp/",
+        "http://sc-takatsukikammaki.jp/contact",
+        "http://sc-takatsukikammaki.jp/about"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://myonchi.com/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "https://myonchi.com/access.php",
+        "https://myonchi.com/property/rental",
+        "https://myonchi.com/property/rental/detail/%e3%82%b0%e3%83%a9%e3%83%b3%e3%83%88%e3%83%bc%e3%83%ac%e6%a9%8b%e6%9c%ac",
+        "https://myonchi.com/property/rental/detail/18",
+        "https://myonchi.com/property/sales",
+        "https://myonchi.com/property/sales/detail/%e3%82%b5%e3%83%b3%e3%83%b4%e3%82%a7%e3%83%bc%e3%83%ab%e6%a9%8b%e6%9c%ac%e3%83%84%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%af%e3%83%bc%e3%80%80%e3%82%b9%e3%83%86%e3%83%bc%e3%82%b8%ef%bc%92"
+      ],
+      "seen_pages": [
+        "https://myonchi.com/",
+        "https://myonchi.com/contact.php",
+        "https://myonchi.com/company.php"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://urashirube.jp/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "https://urashirube.jp/ad-policy",
+        "https://urashirube.jp/best/24jikan",
+        "https://urashirube.jp/best/atobarai",
+        "https://urashirube.jp/best/chat-uranai",
+        "https://urashirube.jp/best/jojo-unei",
+        "https://urashirube.jp/best/mail-uranai",
+        "https://urashirube.jp/best/muryo-otameshi",
+        "https://urashirube.jp/best/shokai-tokuten",
+        "https://urashirube.jp/best/yasui",
+        "https://urashirube.jp/guide",
+        "https://urashirube.jp/guidelines",
+        "https://urashirube.jp/privacy",
+        "https://urashirube.jp/service/atlantis",
+        "https://urashirube.jp/service/brillante",
+        "https://urashirube.jp/service/coconala",
+        "https://urashirube.jp/service/comet",
+        "https://urashirube.jp/service/kizuna",
+        "https://urashirube.jp/service/polarca",
+        "https://urashirube.jp/service/sela",
+        "https://urashirube.jp/service/ulana",
+        "https://urashirube.jp/service/vernis",
+        "https://urashirube.jp/services"
+      ],
+      "seen_pages": [
+        "https://urashirube.jp/",
+        "https://urashirube.jp/contact",
+        "https://urashirube.jp/about"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    },
+    "https://shiga-seibi.com/": {
+      "added_at": "2026-08-21T14:15:17.377410+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T14:15:17.377410+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "https://shiga-seibi.com/%e6%96%b0%e3%82%a6%e3%82%a7%e3%83%96%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92open%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81",
+        "https://shiga-seibi.com/case",
+        "https://shiga-seibi.com/case_maker/audi",
+        "https://shiga-seibi.com/case_maker/benz",
+        "https://shiga-seibi.com/case_maker/bmw",
+        "https://shiga-seibi.com/case_maker/imported_other",
+        "https://shiga-seibi.com/case_maker/mini",
+        "https://shiga-seibi.com/case_maker/porsche",
+        "https://shiga-seibi.com/case_maker/volkswagen",
+        "https://shiga-seibi.com/case_maker/volvo",
+        "https://shiga-seibi.com/customer",
+        "https://shiga-seibi.com/inspection",
+        "https://shiga-seibi.com/news",
+        "https://shiga-seibi.com/privacypolicy",
+        "https://shiga-seibi.com/service",
+        "https://shiga-seibi.com/service/inspection",
+        "https://shiga-seibi.com/service/insurance",
+        "https://shiga-seibi.com/service/maintenance",
+        "https://shiga-seibi.com/service/sheet_metal",
+        "https://shiga-seibi.com/sitemap",
+        "https://shiga-seibi.com/strength"
+      ],
+      "seen_pages": [
+        "https://shiga-seibi.com/",
+        "https://shiga-seibi.com/contact",
+        "https://shiga-seibi.com/company"
+      ],
+      "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
+    }
+  },
+  "removed": [],
+  "recent_runs": [
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://dnd-inc.jp/",
+      "result": "notified",
+      "pages": 3,
+      "phones": [
+        "090-****-9984"
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://takahashitei-wa-sachiko.com/",
+      "result": "ok_no_phone",
+      "pages": 1,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://otto-studio.jp/",
+      "result": "ok_no_phone",
+      "pages": 1,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://luminalink-ai.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://greeon.co.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://sc-takatsukikammaki.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://myonchi.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://urashirube.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T14:15:17.377410+09:00",
+      "url": "https://shiga-seibi.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    }
+  ],
+  "batch_cursor": 0
 }

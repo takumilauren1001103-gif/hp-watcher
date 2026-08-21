@@ -1,27 +1,41 @@
 {
   "target_urls": [
-    "https://dnd-inc.jp/",
     "https://takahashitei-wa-sachiko.com/",
-    "https://otto-studio.jp/#services",
+    "https://otto-studio.jp/",
     "https://luminalink-ai.com/",
-    "https://greeon.co.jp",
+    "https://greeon.co.jp/",
     "https://sc-takatsukikammaki.jp/",
     "https://myonchi.com/",
     "https://urashirube.jp/",
-    "https://shiga-seibi.com"
+    "https://shiga-seibi.com/"
   ],
-  "notified_urls": [],
+  "notified_urls": [
+    {
+      "url": "https://dnd-inc.jp/",
+      "notified_at": "2026-08-21T14:15:17.377410+09:00",
+      "phones": [
+        "090-****-9984"
+      ],
+      "status": "notified"
+    }
+  ],
   "max_target_urls": 120,
   "batch_size": 10,
   "check_interval_minutes": 30,
   "notification_cooldown_minutes": 60,
+  "detect_mobile": true,
+  "detect_landline": true,
+  "detect_tollfree": true,
+  "use_browser": true,
+  "use_ocr": true,
+  "ocr_max_images": 2,
   "max_pages_per_site_run": 3,
   "max_crawl_queue_per_site": 200,
   "max_pdfs_per_site_run": 1,
   "max_seconds_per_site": 45,
   "request_interval_seconds": 2,
-  "ocr_max_images": 2,
   "rediscover_days": 7,
   "purge_no_phone_days": 40,
-  "min_successful_checks_before_purge": 5
+  "min_successful_checks_before_purge": 5,
+  "error_alert_after": 3
 }
