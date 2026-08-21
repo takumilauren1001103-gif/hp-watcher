@@ -2,62 +2,56 @@ name: HP電話番号監視
 
 on:
   schedule:
-    # 30分ごと。10分ごとにしたい場合は "*/10 * * * *"
-    - cron: "*/30 * * * *"
+    # 毎時00分を避け、GitHub Actionsの混雑による遅延を少し抑える。
+    - cron: "7,37 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+# 前の起動が残っているときは、新しい起動を待たせる。並列ワーカーは同じ起動内でのみ動く。
 concurrency:
   group: phone-watcher
   cancel-in-progress: false
 
 jobs:
-  watch:
+  watch-json:
+    # 切替設定前は従来のJSON保存をそのまま継続する。
+    if: vars.STORAGE_BACKEND != 'sheets'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: リポジトリを取得
         uses: actions/checkout@v4
-
       - name: Pythonを準備
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Pythonライブラリをインストール
         run: pip install --quiet playwright pytesseract pillow pypdf
-
       - name: OCRエンジンを準備
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq tesseract-ocr
-
       - name: ブラウザをキャッシュから復元
         id: browser-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-chromium-v1
-
       - name: ブラウザを準備
         if: steps.browser-cache.outputs.cache-hit != 'true'
         run: python -m playwright install --with-deps chromium
-
       - name: ブラウザの依存だけ入れる（キャッシュ利用時）
         if: steps.browser-cache.outputs.cache-hit == 'true'
         run: python -m playwright install-deps chromium
-
       - name: 監視ロジックを検証
-        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py
-
+        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py test_sheets_storage.py
       - name: 監視スクリプトを実行
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python monitor.py
-
       - name: 履歴と監視リストを保存
         if: always()
         run: |
@@ -74,3 +68,51 @@ jobs:
               sleep 5
             done
           fi
+
+  watch-sheets:
+    # Repository VariableのSTORAGE_BACKENDをsheetsへ変えた後だけ、有効になる。
+    if: vars.STORAGE_BACKEND == 'sheets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+      - name: Pythonを準備
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pythonライブラリをインストール
+        run: pip install --quiet playwright pytesseract pillow pypdf google-api-python-client google-auth
+      - name: OCRエンジンを準備
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr
+      - name: ブラウザをキャッシュから復元
+        id: browser-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-v1
+      - name: ブラウザを準備
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        run: python -m playwright install --with-deps chromium
+      - name: ブラウザの依存だけ入れる（キャッシュ利用時）
+        if: steps.browser-cache.outputs.cache-hit == 'true'
+        run: python -m playwright install-deps chromium
+      - name: 監視ロジックを検証
+        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py test_sheets_storage.py
+      - name: 監視スクリプトを実行
+        env:
+          STORAGE_BACKEND: sheets
+          GOOGLE_SHEETS_ID: ${{ vars.GOOGLE_SHEETS_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          WATCHER_SHARD_ID: ${{ matrix.shard }}
+          WATCHER_SHARD_COUNT: 4
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor.py

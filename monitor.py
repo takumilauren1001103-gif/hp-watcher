@@ -78,6 +78,19 @@ def save_config_urls(urls):
     save_config(cfg)
 
 
+def use_sheets_storage():
+    """保存先をGoogleスプレッドシートに切り替える明示的なフラグ。"""
+    return os.environ.get("STORAGE_BACKEND", "json").strip().lower() == "sheets"
+
+
+def open_storage():
+    """設定された保存先を開く。既定では従来のJSON保存を維持する。"""
+    if not use_sheets_storage():
+        return None
+    from sheets_storage import SheetsStorage
+    return SheetsStorage()
+
+
 def load_history():
     base = {"notified": {}, "detected": {}, "failures": {}, "url_state": {}, "removed": [], "recent_runs": [], "batch_cursor": 0}
     if not os.path.exists(HISTORY_FILE):
@@ -173,7 +186,21 @@ def ensure_state(history, url, now):
     state.setdefault("crawl_queue", [])
     state.setdefault("seen_pages", [])
     state.setdefault("last_discovery_at", None)
+    state.setdefault("next_due_at", None)
+    state.setdefault("lease_until", None)
     return state
+
+
+def select_due_batch(urls, history, size, now):
+    """保存先が分散しても、最も長く未巡回のURLから公平に選ぶ。"""
+    size = max(1, min(int(size), len(urls))) if urls else 0
+    far_future = datetime.max.replace(tzinfo=JST)
+    def rank(url):
+        state = history.get("url_state", {}).get(url, {})
+        due = parse_stamp(state.get("next_due_at"))
+        checked = parse_stamp(state.get("last_checked_at"))
+        return (0 if not due or due <= now else 1, due or checked or datetime.min.replace(tzinfo=JST), checked or datetime.min.replace(tzinfo=JST), url)
+    return sorted(urls, key=rank)[:size]
 
 
 def select_batch(urls, history, size):
@@ -595,17 +622,22 @@ def move_to_notified(cfg, root_url, items, now):
 # 実行
 # ──────────────────────────────────────────────
 def main():
-    cfg = load_config(); now = now_jst()
+    storage = open_storage()
+    cfg = storage.load_config(DEFAULTS) if storage else load_config()
+    cfg["telegram_bot_token"] = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    cfg["telegram_chat_id"] = os.environ.get("TELEGRAM_CHAT_ID", "")
+    now = now_jst()
     token, chat_id = cfg["telegram_bot_token"], cfg["telegram_chat_id"]
     if not token or not chat_id:
         print("エラー: TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID が未設定です"); return
     urls = normalized_urls(cfg.get("target_urls", []), int(cfg.get("max_target_urls", 120)))
     cfg["target_urls"] = urls
-    history = load_history()
+    history = storage.load_history() if storage else load_history()
     for url in urls: ensure_state(history, url, now)
     urls, removed = purge_no_phone_urls(urls, history, cfg, now)
     cfg["target_urls"] = urls
-    batch = select_batch(urls, history, cfg.get("batch_size", 10))
+    batch = select_due_batch(urls, history, cfg.get("batch_size", 10), now) if storage else select_batch(urls, history, cfg.get("batch_size", 10))
+    cycle_minutes = max(int(cfg.get("check_interval_minutes", 30)), int(cfg.get("check_interval_minutes", 30)) * ((len(urls) + max(1, int(cfg.get("batch_size", 10))) - 1) // max(1, int(cfg.get("batch_size", 10)))))
     print(f"=== チェック開始 / 全{len(urls)}件中 {len(batch)}件 ===")
     config_changed, send_failed = bool(removed), 0
 
@@ -613,6 +645,8 @@ def main():
         if idx: time.sleep(max(1, int(cfg.get("request_interval_seconds", 2))))
         print(f"\n[確認中] {url}")
         state = ensure_state(history, url, now)
+        state["lease_until"] = (now + timedelta(minutes=max(15, cycle_minutes))).isoformat()
+        state["next_due_at"] = (now + timedelta(minutes=cycle_minutes)).isoformat()
         try: result = scan_site(url, cfg, state, now)
         except Exception as err: result = {"error": f"想定外のエラー: {type(err).__name__}: {err}", "real": [], "excluded": [], "suspect": [], "pages": [], "title": None}
         if result["error"]:
@@ -638,8 +672,13 @@ def main():
         else:
             send_failed += 1; recent_run(history, now, url, "notification_failed", len(result["pages"]), [x[0] for x in fresh])
 
-    if config_changed: save_config(cfg)
-    save_history(history)
+    if storage:
+        storage.stage_config(cfg)
+        storage.save(cfg, history)
+    else:
+        if config_changed:
+            save_config(cfg)
+        save_history(history)
     print("\n=== チェック終了 ===")
     if send_failed: raise SystemExit(1)
 
