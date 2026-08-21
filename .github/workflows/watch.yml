@@ -27,7 +27,7 @@ jobs:
           python-version: "3.12"
 
       - name: Pythonライブラリをインストール
-        run: pip install --quiet playwright pytesseract pillow
+        run: pip install --quiet playwright pytesseract pillow pypdf
 
       - name: OCRエンジンを準備
         run: |
@@ -48,6 +48,9 @@ jobs:
       - name: ブラウザの依存だけ入れる（キャッシュ利用時）
         if: steps.browser-cache.outputs.cache-hit == 'true'
         run: python -m playwright install-deps chromium
+
+      - name: 監視ロジックを検証
+        run: python -m unittest -q test_monitor_v4.py test_monitor_v5.py
 
       - name: 監視スクリプトを実行
         env:
