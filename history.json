@@ -5,28 +5,7 @@
   "detected": {
     "https://dnd-inc.jp/": "2026-08-21T14:15:17.377410+09:00"
   },
-  "failures": {
-    "https://sc-takatsukikammaki.jp/": {
-      "count": 1,
-      "alerted": false,
-      "last_error": "<urlopen error timed out>"
-    },
-    "https://myonchi.com/": {
-      "count": 1,
-      "alerted": false,
-      "last_error": "<urlopen error timed out>"
-    },
-    "https://shiga-seibi.com/": {
-      "count": 1,
-      "alerted": false,
-      "last_error": "<urlopen error timed out>"
-    },
-    "https://dnd-inc.jp/": {
-      "count": 1,
-      "alerted": false,
-      "last_error": "<urlopen error timed out>"
-    }
-  },
+  "failures": {},
   "url_state": {
     "https://takahashitei-wa-sachiko.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
@@ -43,8 +22,8 @@
     },
     "https://otto-studio.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 2,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 3,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
@@ -56,8 +35,8 @@
     },
     "https://luminalink-ai.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 2,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 3,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
@@ -73,14 +52,12 @@
     },
     "https://greeon.co.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 2,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 3,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
       "crawl_queue": [
-        "https://greeon.co.jp/news/2026-05-15-greeon-founded",
-        "https://greeon.co.jp/privacy",
         "https://greeon.co.jp/services"
       ],
       "seen_pages": [
@@ -88,20 +65,20 @@
         "https://greeon.co.jp/contact",
         "https://greeon.co.jp/about",
         "https://greeon.co.jp/cdn-cgi/l/email-protection",
-        "https://greeon.co.jp/news"
+        "https://greeon.co.jp/news",
+        "https://greeon.co.jp/news/2026-05-15-greeon-founded",
+        "https://greeon.co.jp/privacy"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://sc-takatsukikammaki.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
-      "last_result": "fetch_error",
-      "last_error": "<urlopen error timed out>",
+      "last_result": "suspect_only",
+      "last_error": null,
       "crawl_queue": [
-        "http://sc-takatsukikammaki.jp/company-info",
-        "https://sc-takatsukikammaki.jp/companies/company-a",
         "https://sc-takatsukikammaki.jp/companies/company-b",
         "https://sc-takatsukikammaki.jp/companies/company-c",
         "http://sc-takatsukikammaki.jp/advertise",
@@ -171,47 +148,52 @@
         "http://sc-takatsukikammaki.jp/area/nagareyama",
         "http://sc-takatsukikammaki.jp/area/soka",
         "http://sc-takatsukikammaki.jp/area/yashio",
-        "http://sc-takatsukikammaki.jp/area/yoshikawa"
+        "http://sc-takatsukikammaki.jp/area/yoshikawa",
+        "https://sc-takatsukikammaki.jp/contact"
       ],
       "seen_pages": [
         "https://sc-takatsukikammaki.jp/",
         "http://sc-takatsukikammaki.jp/contact",
-        "http://sc-takatsukikammaki.jp/about"
+        "http://sc-takatsukikammaki.jp/about",
+        "http://sc-takatsukikammaki.jp/company-info",
+        "https://sc-takatsukikammaki.jp/companies/company-a"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://myonchi.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
-      "last_result": "fetch_error",
-      "last_error": "<urlopen error timed out>",
+      "last_result": "ok_no_phone",
+      "last_error": null,
       "crawl_queue": [
-        "https://myonchi.com/access.php",
-        "https://myonchi.com/property/rental",
         "https://myonchi.com/property/rental/detail/%e3%82%b0%e3%83%a9%e3%83%b3%e3%83%88%e3%83%bc%e3%83%ac%e6%a9%8b%e6%9c%ac",
         "https://myonchi.com/property/rental/detail/18",
         "https://myonchi.com/property/sales",
-        "https://myonchi.com/property/sales/detail/%e3%82%b5%e3%83%b3%e3%83%b4%e3%82%a7%e3%83%bc%e3%83%ab%e6%a9%8b%e6%9c%ac%e3%83%84%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%af%e3%83%bc%e3%80%80%e3%82%b9%e3%83%86%e3%83%bc%e3%82%b8%ef%bc%92"
+        "https://myonchi.com/property/sales/detail/%e3%82%b5%e3%83%b3%e3%83%b4%e3%82%a7%e3%83%bc%e3%83%ab%e6%a9%8b%e6%9c%ac%e3%83%84%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%af%e3%83%bc%e3%80%80%e3%82%b9%e3%83%86%e3%83%bc%e3%82%b8%ef%bc%92",
+        "https://myonchi.com/property/../contact.php",
+        "https://myonchi.com/property/../company.php",
+        "https://myonchi.com/property/..",
+        "https://myonchi.com/property/../access.php"
       ],
       "seen_pages": [
         "https://myonchi.com/",
         "https://myonchi.com/contact.php",
-        "https://myonchi.com/company.php"
+        "https://myonchi.com/company.php",
+        "https://myonchi.com/access.php",
+        "https://myonchi.com/property/rental"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://urashirube.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 2,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 3,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
       "last_result": "ok_no_phone",
       "last_error": null,
       "crawl_queue": [
-        "https://urashirube.jp/best/atobarai",
-        "https://urashirube.jp/best/chat-uranai",
         "https://urashirube.jp/best/jojo-unei",
         "https://urashirube.jp/best/mail-uranai",
         "https://urashirube.jp/best/muryo-otameshi",
@@ -230,27 +212,29 @@
         "https://urashirube.jp/service/ulana",
         "https://urashirube.jp/service/vernis",
         "https://urashirube.jp/services",
-        "https://urashirube.jp/service/spacia"
+        "https://urashirube.jp/service/spacia",
+        "https://urashirube.jp/service/destiny",
+        "https://urashirube.jp/service/miror"
       ],
       "seen_pages": [
         "https://urashirube.jp/",
         "https://urashirube.jp/contact",
         "https://urashirube.jp/about",
         "https://urashirube.jp/ad-policy",
-        "https://urashirube.jp/best/24jikan"
+        "https://urashirube.jp/best/24jikan",
+        "https://urashirube.jp/best/atobarai",
+        "https://urashirube.jp/best/chat-uranai"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://shiga-seibi.com/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 1,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
+      "successful_checks": 2,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
       "last_phone_detected_at": null,
-      "last_result": "fetch_error",
-      "last_error": "<urlopen error timed out>",
+      "last_result": "ok_no_phone",
+      "last_error": null,
       "crawl_queue": [
-        "https://shiga-seibi.com/%e6%96%b0%e3%82%a6%e3%82%a7%e3%83%96%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92open%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81",
-        "https://shiga-seibi.com/case",
         "https://shiga-seibi.com/case_maker/audi",
         "https://shiga-seibi.com/case_maker/benz",
         "https://shiga-seibi.com/case_maker/bmw",
@@ -274,22 +258,95 @@
       "seen_pages": [
         "https://shiga-seibi.com/",
         "https://shiga-seibi.com/contact",
-        "https://shiga-seibi.com/company"
+        "https://shiga-seibi.com/company",
+        "https://shiga-seibi.com/%e6%96%b0%e3%82%a6%e3%82%a7%e3%83%96%e3%82%b5%e3%82%a4%e3%83%88%e3%82%92open%e3%81%97%e3%81%be%e3%81%97%e3%81%9f%ef%bc%81",
+        "https://shiga-seibi.com/case"
       ],
       "last_discovery_at": "2026-08-21T14:15:17.377410+09:00"
     },
     "https://dnd-inc.jp/": {
       "added_at": "2026-08-21T14:15:17.377410+09:00",
-      "successful_checks": 0,
-      "last_checked_at": "2026-08-21T14:29:15.579233+09:00",
-      "last_phone_detected_at": "2026-08-21T14:15:17.377410+09:00",
-      "last_result": "fetch_error",
-      "last_error": "<urlopen error timed out>",
-      "crawl_queue": [],
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
+      "last_phone_detected_at": "2026-08-21T15:01:07.129397+09:00",
+      "last_result": "phone_detected",
+      "last_error": null,
+      "crawl_queue": [
+        "https://dnd-inc.jp/company.html",
+        "https://dnd-inc.jp/blog",
+        "https://dnd-inc.jp/blog/ai-cashflow-forecast-management.html",
+        "https://dnd-inc.jp/blog/ai-computer-use-legacy-automation.html",
+        "https://dnd-inc.jp/blog/ai-contract-review-guide.html",
+        "https://dnd-inc.jp/blog/ai-customer-data-analysis.html",
+        "https://dnd-inc.jp/blog/ai-customer-review-analysis.html",
+        "https://dnd-inc.jp/blog/ai-deep-research-competitive-monitoring.html",
+        "https://dnd-inc.jp/blog/ai-demand-forecast-inventory.html",
+        "https://dnd-inc.jp/blog/ai-email-response-automation.html",
+        "https://dnd-inc.jp/blog/ai-excel-report-automation.html",
+        "https://dnd-inc.jp/blog/ai-expense-management-automation.html",
+        "https://dnd-inc.jp/blog/ai-manual-training-efficiency.html",
+        "https://dnd-inc.jp/blog/ai-meeting-minutes-automation.html",
+        "https://dnd-inc.jp/blog/ai-order-processing-automation.html",
+        "https://dnd-inc.jp/blog/ai-payroll-hr-automation.html",
+        "https://dnd-inc.jp/blog/ai-product-copy-generation.html",
+        "https://dnd-inc.jp/blog/ai-recruitment-efficiency.html",
+        "https://dnd-inc.jp/blog/ai-roi-measurement-guide.html",
+        "https://dnd-inc.jp/blog/ai-slide-presentation-automation.html",
+        "https://dnd-inc.jp/blog/ai-sns-content-automation.html",
+        "https://dnd-inc.jp/blog/ai-team-adoption.html",
+        "https://dnd-inc.jp/blog/ai-translation-multilingual-guide.html",
+        "https://dnd-inc.jp/blog/ai-video-marketing-in-house.html",
+        "https://dnd-inc.jp/blog/ai-voicebot-phone-reception.html",
+        "https://dnd-inc.jp/blog/chatgpt-work-deliverable-agent.html",
+        "https://dnd-inc.jp/blog/claude-cowork-record-skill-automation.html",
+        "https://dnd-inc.jp/blog/dify-internal-ai-app-guide.html",
+        "https://dnd-inc.jp/blog/gemini-notebook-business-guide.html",
+        "https://dnd-inc.jp/blog/genai-security-data-risk.html",
+        "https://dnd-inc.jp/blog/index.html",
+        "https://dnd-inc.jp/blog/n8n-workflow-ai-automation.html",
+        "https://dnd-inc.jp/blog/vibe-coding-internal-tool-guide.html",
+        "https://dnd-inc.jp/business.html",
+        "https://dnd-inc.jp/en",
+        "https://dnd-inc.jp/kumamoto-support.html",
+        "https://dnd-inc.jp/news.html",
+        "https://dnd-inc.jp/privacy.html",
+        "https://dnd-inc.jp/service-agent-office.html",
+        "https://dnd-inc.jp/service-ai-teleapo.html",
+        "https://dnd-inc.jp/service-bi.html",
+        "https://dnd-inc.jp/service-development.html",
+        "https://dnd-inc.jp/service-operation.html",
+        "https://dnd-inc.jp/service-saas.html",
+        "https://dnd-inc.jp/en/contact.html"
+      ],
       "seen_pages": [
-        "https://dnd-inc.jp/"
+        "https://dnd-inc.jp/",
+        "https://dnd-inc.jp/tokushoho.html",
+        "https://dnd-inc.jp/contact.html"
       ],
       "last_discovery_at": "2026-08-21T14:29:15.579233+09:00"
+    },
+    "https://www.shigumakucho-fukuoka.com/": {
+      "added_at": "2026-08-21T15:01:07.129397+09:00",
+      "successful_checks": 1,
+      "last_checked_at": "2026-08-21T15:01:07.129397+09:00",
+      "last_phone_detected_at": null,
+      "last_result": "ok_no_phone",
+      "last_error": null,
+      "crawl_queue": [
+        "https://www.shigumakucho-fukuoka.com/%e6%96%bd%e5%b7%a5%e4%ba%8b%e4%be%8b%e3%82%92%e6%8e%b2%e8%bc%89%e4%ba%88%e5%ae%9a",
+        "https://www.shigumakucho-fukuoka.com/blog",
+        "https://www.shigumakucho-fukuoka.com/category/blog_news",
+        "https://www.shigumakucho-fukuoka.com/category/blog_works",
+        "https://www.shigumakucho-fukuoka.com/information",
+        "https://www.shigumakucho-fukuoka.com/reason",
+        "https://www.shigumakucho-fukuoka.com/service"
+      ],
+      "seen_pages": [
+        "https://www.shigumakucho-fukuoka.com/",
+        "https://www.shigumakucho-fukuoka.com/contact",
+        "https://www.shigumakucho-fukuoka.com/%e3%81%8a%e7%9f%a5%e3%82%89%e3%81%9b%e3%82%92%e6%8e%b2%e8%bc%89%e4%ba%88%e5%ae%9a"
+      ],
+      "last_discovery_at": "2026-08-21T15:01:07.129397+09:00"
     }
   },
   "removed": [],
@@ -439,6 +496,80 @@
       "pages": 0,
       "phones": [],
       "error": "<urlopen error timed out>"
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://otto-studio.jp/",
+      "result": "ok_no_phone",
+      "pages": 1,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://luminalink-ai.com/",
+      "result": "ok_no_phone",
+      "pages": 1,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://greeon.co.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://sc-takatsukikammaki.jp/",
+      "result": "suspect_only",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://myonchi.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://urashirube.jp/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://shiga-seibi.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://dnd-inc.jp/",
+      "result": "phone_detected",
+      "pages": 3,
+      "phones": [
+        "090-****-9984"
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-08-21T15:01:07.129397+09:00",
+      "url": "https://www.shigumakucho-fukuoka.com/",
+      "result": "ok_no_phone",
+      "pages": 3,
+      "phones": [],
+      "error": null
     }
   ],
   "batch_cursor": 0
