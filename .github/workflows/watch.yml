@@ -5,6 +5,15 @@ on:
     # 毎時00分を避け、GitHub Actionsの混雑による遅延を少し抑える。
     - cron: "7,37 * * * *"
   workflow_dispatch:
+    inputs:
+      operation:
+        description: "実行内容"
+        required: true
+        default: "monitor"
+        type: choice
+        options:
+          - monitor
+          - initialize-sheets
 
 permissions:
   contents: write
@@ -17,7 +26,7 @@ concurrency:
 jobs:
   watch-json:
     # 切替設定前は従来のJSON保存をそのまま継続する。
-    if: vars.STORAGE_BACKEND != 'sheets'
+    if: vars.STORAGE_BACKEND != 'sheets' && github.event.inputs.operation != 'initialize-sheets'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -69,9 +78,29 @@ jobs:
             done
           fi
 
+  initialize-sheets:
+    # 一度だけ、既存JSONの設定・状態・履歴を空のGoogle Sheetへ複製する。
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.operation == 'initialize-sheets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+      - name: Pythonを準備
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Google Sheets用ライブラリをインストール
+        run: pip install --quiet google-api-python-client google-auth
+      - name: スプレッドシートを初期化して既存データを移行
+        env:
+          GOOGLE_SHEETS_ID: ${{ vars.GOOGLE_SHEETS_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python initialize_sheets.py
+
   watch-sheets:
     # Repository VariableのSTORAGE_BACKENDをsheetsへ変えた後だけ、有効になる。
-    if: vars.STORAGE_BACKEND == 'sheets'
+    if: vars.STORAGE_BACKEND == 'sheets' && github.event.inputs.operation != 'initialize-sheets'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:

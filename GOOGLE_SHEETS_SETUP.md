@@ -71,15 +71,9 @@ http://localhost:8000
 | `Removed_URLs` | 手動削除・40日未検出による削除履歴 |
 | `Settings` | 巡回・検出パラメータ |
 
-初期化はGitHub Actionsの**手動実行**で行います。最初の実装反映後に、ワークフローへ一時的な初期化ステップを追加するか、ローカル環境で次の環境変数を与えて実行します。JSON鍵をコマンド行へ直接書かず、ファイルまたは安全な環境変数から渡してください。[3]
+初期化は**PC不要**でGitHub Actionsの手動実行から行えます。`Actions` → `HP電話番号監視` → `Run workflow`を開き、**実行内容**で`initialize-sheets`を選んで実行してください。この専用ジョブは、手順4で登録したRepository secret / variableを環境変数としてだけ利用し、JSON鍵をログやリポジトリへ保存しません。[3]
 
-```text
-GOOGLE_SHEETS_ID=<シートID>
-GOOGLE_SERVICE_ACCOUNT_JSON=<サービスアカウントJSON全文>
-python initialize_sheets.py
-```
-
-**初期化完了が確認できるまで`STORAGE_BACKEND=sheets`を設定しないでください。** 初期化を繰り返しても、URL・通知済み・履歴が重複しないよう実装されています。
+完了すると、ログに`移行完了: 監視中 ... 件 / 通知済み ... 件 / 履歴 ... 件`と表示され、スプレッドシートに5つのタブが作られます。**初期化完了が確認できるまで`STORAGE_BACKEND=sheets`を設定しないでください。** 初期化を繰り返しても、URL・通知済み・履歴が重複しないよう実装されています。
 
 ## 6. 影運転から本番切替へ進める
 
